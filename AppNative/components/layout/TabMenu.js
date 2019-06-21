@@ -1,5 +1,6 @@
 import React from "react";
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from '../Home'
@@ -7,34 +8,54 @@ import Pedidos from '../Pedidos'
 import Productos from '../Productos'
 import Clientes from '../Clientes'
 
-const Tab = createBottomTabNavigator(
-    {
-        Home: Home,
-        Pedidos: Pedidos,
-        Productos: Productos,
-        Clientes: Clientes
+
+
+const Tab = createMaterialBottomTabNavigator(
+  {
+    Home: {
+      screen: Home,
+      navigationOptions: {
+        tabBarLabel: "Home",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-home" size={20} />
+        )
+      },
     },
-    {
-        tabBarOptions: {
-            activeTintColor: 'white',
-            activeBackgroundColor: 'mediumspringgreen',
-            inactiveTintColor: 'gray',
-        },
+    Pedidos: {
+      screen: Pedidos,
+      navigationOptions: {
+        tabBarLabel: "Pedidos",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-cart" size={20} />
+        )
+      },
     },
-    {
-        navigationOptions: ({ navigation }) => ({
-            tabBarIcon: ({ focused, horizontal, tintColor }) => {
-                const { routeName } = navigation.state;
-                let iconName;
-                if (routeName === 'Home') {
-                    iconName = 'home';
-                } else if (routeName === 'Pedidos') {
-                    iconName = 'home';
-                }
-                return <Icon name='home' size={horizontal ? 20 : 25} color={tintColor} />;
-            },
-        }),
+    Productos: {
+      screen: Productos,
+      navigationOptions: {
+        tabBarLabel: "Productos",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-beer" size={20} />
+        )
+      },
     },
+    Clientes: {
+      screen: Clientes,
+      navigationOptions: {
+        tabBarLabel: "Clientes",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-people" size={20} />
+        )
+      },
+    }
+  },
+  {
+    activeColor: 'white',
+    barStyle: { backgroundColor: 'royalblue' },
+    inactiveColor: 'gray',
+    initialRouteName: 'Home'
+  },
+
 );
 
 const Container = createAppContainer(Tab);
