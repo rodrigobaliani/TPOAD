@@ -1,0 +1,10 @@
+/META-INF/
+/controlador/
+/daos/
+/entities/
+/exceptions/
+/hibernate.properties
+/hibernate/
+/negocio/
+/test/
+/view/
