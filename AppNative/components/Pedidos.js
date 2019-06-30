@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, ScrollView, StyleSheet, ListView, TouchableHighlight, Text } from 'react-native'
-import { List, Divider, FAB, TextInput } from 'react-native-paper'
+import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text } from 'react-native'
+import { List, Divider, FAB, TextInput, Snackbar } from 'react-native-paper'
 import { NavigationEvents } from "react-navigation";
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,18 +10,21 @@ import 'prop-types';
 
 export class Pedidos extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    }
-
     state = {
         pedidos: [],
         crearPedido: false,
         cuit: '',
         listViewData: Array(20).fill('').map((_, i) => `item #${i}`),
-        ds: []
+        ds: [],
+        mostrarMensaje: false,
+        mensaje: ''
     }
+
+    constructor(props) {
+        super(props);
+        this.state.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    }
+
 
     componentDidMount() {
         this.cargarPedidos()
@@ -36,16 +39,8 @@ export class Pedidos extends Component {
                 });
 
             }).catch((error) => {
-                alert("Error en carga de pedidos:" + error);
+                alert("Error en carga de pedidos:" + error)
             })
-    }
-
-    mostrarInputCuit = () => {
-        this.setState({ crearPedido: true })
-    }
-
-    ocultarInputCuit = () => {
-        this.setState({ crearPedido: false })
     }
 
     crearPedido = () => {
@@ -59,6 +54,7 @@ export class Pedidos extends Component {
                     fetch(send)
                         .then((res) => res.json()).then((responseData) => {
                             this.setState({ pedidos: [...this.state.pedidos, responseData] })
+                            this.mostrarMensaje('Pedido creado correctamente.')
                         });
                 } else
                     alert(responseData.message)
@@ -69,84 +65,86 @@ export class Pedidos extends Component {
         })
     }
 
-    facturarPedido = (numeroPedido, estado) => {
+
+    facturarPedido = (numeroPedido, estado, cantItems) => {
+        alert(cantItems)
         if (estado == 'facturado')
-            alert('Este pedido ya está facturado.')
+            this.mostrarMensaje('No se puede facturar un pedido ya facturado.')
         else {
-            const url = 'http://10.0.2.2:8080/tpo/pedidos/facturar?numero=' + numeroPedido
-            fetch(url)
-                .then((res) => {
-                    if (res.ok) {
-                        this.setState({
-                            pedidos: this.state.pedidos.map((pedido) => {
-                                if (pedido.numeroPedido == numeroPedido)
-                                    pedido.estado = 'facturado'
-                                return pedido
+            if (cantItems == 0)
+                this.mostrarMensaje('No se puede facturar un pedido sin items.')
+            else {
+                const url = 'http://10.0.2.2:8080/tpo/pedidos/facturar?numero=' + numeroPedido
+                fetch(url)
+                    .then((res) => {
+                        if (res.ok) {
+                            this.setState({
+                                pedidos: this.state.pedidos.map((pedido) => {
+                                    if (pedido.numeroPedido == numeroPedido)
+                                        pedido.estado = 'facturado'
+                                    return pedido
+                                })
                             })
-                        })
-                    } else {
-                        const responseData = res.json()
-                        alert(responseData.message)
-                    }
-                })
+                            this.mostrarMensaje('El pedido ' + numeroPedido + ' ha sido facturado.')
+                        } else {
+                            const responseData = res.json()
+                            alert(responseData.message)
+                        }
+                    })
+            }
         }
     }
 
     eliminarPedido = (numeroPedido, estado) => {
         if (estado == 'facturado')
-            alert('No se puede eliminar un pedido ya facturado.')
+            this.mostrarMensaje('No se puede facturar un pedido ya facturado.')
         else {
             const url = 'http://10.0.2.2:8080/tpo/pedidos/' + numeroPedido;
             fetch(url, { method: 'DELETE' })
                 .then((res) => {
                     if (res.ok) {
                         this.setState({ pedidos: [...this.state.pedidos.filter(pedido => pedido.numeroPedido != numeroPedido)] })
+                        this.mostrarMensaje('Pedido eliminado correctamente.')
                     }
                 });
         }
     }
 
+    mostrarDetallePedido = (numeroPedido) => {
+        this.props.navigation.navigate('Pedido', { numeroPedido: numeroPedido })
+    }
+
+    mostrarMensaje = (mensaje) => {
+        this.setState({
+            mensaje: mensaje,
+            mostrarMensaje: true
+        })
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                {/* <ScrollView>
-                    {this.state.pedidos.map((pedido) =>
-                        <View>
-                            <TouchableOpacity>
-                                <List.Item
-                                    key={pedido.numeroPedido}
-                                    titleStyle={styles.listaPedidos}
-                                    descriptionStyle={styles.listaPedidos}
-                                    title={"Pedido " + pedido.numeroPedido}
-                                    description={
-                                        "Cuit: " + pedido.cliente.cuil +
-                                        "\nEstado: " + pedido.estado
-                                    }
-                                />
-                            </TouchableOpacity>
-                            <Divider />
-                        </View>
-                    )}
-                </ScrollView>*/
-                }
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.pedidos)}
                     renderRow={(pedido, rowId) => (
                         <SwipeRow
-                            disableLeftSwipe={parseInt(rowId) % 2 === 0}
-                            leftOpenValue={20 + Math.random() * 150}
-                            rightOpenValue={-150}
+                            disableRightSwipe={true}
+                            leftOpenValue={20 + Math.random() * 225}
+                            rightOpenValue={-225}
                         >
                             <View style={styles.rowBack}>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.backRightBtn, styles.backRightBtnLeft]}
+                                    onPress={this.mostrarDetallePedido.bind(this, pedido.numeroPedido)}
+                                >
                                     <View style={styles.icons}>
                                         <Icon name="md-list" color="white" size={40} />
                                         <Text style={styles.iconText}>Items</Text>
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={[styles.backRightBtn, styles.backRightBtnLeft]}
-                                    onPress={this.facturarPedido.bind(this, pedido.numeroPedido, pedido.estado)}
+                                    style={[styles.backRightBtn, styles.backRightBtnCenter]}
+                                    onPress={this.facturarPedido.bind(this, pedido.numeroPedido, pedido.estado, pedido.items.lenght)}
                                 >
                                     <View style={styles.icons}>
                                         <Icon name="md-cash" color='white' size={40} />
@@ -158,7 +156,8 @@ export class Pedidos extends Component {
                                     onPress={this.eliminarPedido.bind(this, pedido.numeroPedido, pedido.estado)}
                                 >
                                     <View style={styles.icons}>
-                                        <Icon name="md-trash" color="white" size={40} />
+                                        <Icon
+                                            name="md-trash" color="white" size={40} />
                                         <Text style={styles.iconText}>Eliminar</Text>
                                     </View>
                                 </TouchableOpacity>
@@ -190,7 +189,7 @@ export class Pedidos extends Component {
                         small
                         icon="add"
                         color="white"
-                        onPress={this.mostrarInputCuit}
+                        onPress={() => this.setState({ crearPedido: true })}
                     />
                     : null}
                 {this.state.crearPedido ?
@@ -202,8 +201,18 @@ export class Pedidos extends Component {
                         onSubmitEditing={this.crearPedido}
                     />
                     : null}
-                <NavigationEvents onDidBlur={this.ocultarInputCuit} />
+                <Snackbar
+                    visible={this.state.mostrarMensaje}
+                    onDismiss={() => { this.setState({ mostrarMensaje: false }) }}
+                    action={{
+                        label: 'OK',
+                        onPress: () => { this.setState({ mostrarMensaje: false }) }
+                    }}
+                >
+                    {this.state.mensaje}
+                </Snackbar>
 
+                <NavigationEvents onDidBlur={() => this.setState({ crearPedido: false })} />
             </View>
         )
     }
@@ -251,13 +260,13 @@ const styles = StyleSheet.create({
         width: 75,
     },
     backRightBtnLeft: {
+        right: 150,
+    },
+    backRightBtnCenter: {
         right: 75,
     },
     backRightBtnRight: {
         right: 0,
-    },
-    backLeftBtn: {
-        left: 0,
     },
     icons: {
         flex: 1,
