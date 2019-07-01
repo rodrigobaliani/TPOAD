@@ -109,7 +109,7 @@ export class Pedidos extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* <ScrollView>
+                { <ScrollView>
                     {this.state.pedidos.map((pedido) =>
                         <View>
                             <TouchableOpacity>
@@ -127,7 +127,7 @@ export class Pedidos extends Component {
                             <Divider />
                         </View>
                     )}
-                </ScrollView>*/
+                </ScrollView>
                 }
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.pedidos)}
