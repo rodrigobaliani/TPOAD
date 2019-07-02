@@ -5,7 +5,7 @@ export class Productos extends Component {
     render() {
         return (
             <View>
-                <Text>Productos</Text>
+                <Text>Productos asdDamian</Text>
             </View>
         )
     }

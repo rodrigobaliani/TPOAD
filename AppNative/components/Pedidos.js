@@ -124,29 +124,6 @@ export class Pedidos extends Component {
     render() {
         return (
             <View style={styles.container}>
-<<<<<<< HEAD
-                { <ScrollView>
-                    {this.state.pedidos.map((pedido) =>
-                        <View>
-                            <TouchableOpacity>
-                                <List.Item
-                                    key={pedido.numeroPedido}
-                                    titleStyle={styles.listaPedidos}
-                                    descriptionStyle={styles.listaPedidos}
-                                    title={"Pedido " + pedido.numeroPedido}
-                                    description={
-                                        "Cuit: " + pedido.cliente.cuil +
-                                        "\nEstado: " + pedido.estado
-                                    }
-                                />
-                            </TouchableOpacity>
-                            <Divider />
-                        </View>
-                    )}
-                </ScrollView>
-                }
-=======
->>>>>>> a1332dfd690ed60db354897ad4af713e50f11d6f
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.pedidos)}
                     renderRow={(pedido, rowId) => (
