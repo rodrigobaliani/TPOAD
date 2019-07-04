@@ -2,3 +2,7 @@
 /AppNative/node_modules
 TPODAD.code-workspace
 /.metadata/
+
+.iws
+**/.idea/workspace.xml 
+**/.idea/tasks.xml
