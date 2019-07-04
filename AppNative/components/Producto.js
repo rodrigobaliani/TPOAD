@@ -79,8 +79,8 @@ export class Producto extends Component {
         var subrubroAux = this.state.subrubroSeleccionado
         const producto = {
             identificador: 1,
-            subRubro: subrubroAux, // FILTER DEVUELVE VECTOR
-            rubro: rubroAux, // FILTER DEVUELVE VECTOR
+            subRubro: subrubroAux,
+            rubro: rubroAux, 
             nombre: String(this.state.nombre),
             marca: String(this.state.marca),
             codigoBarras: String(this.state.codigoBarras),

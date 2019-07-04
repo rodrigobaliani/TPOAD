@@ -2,8 +2,3 @@
 /AppNative/node_modules
 TPODAD.code-workspace
 /.metadata/
-/Spring/.classpath
-/Spring/.project
-/Spring/.settings/*
-/Spring/target/*
-/Spring/TPO/.project
