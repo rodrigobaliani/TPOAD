@@ -7,6 +7,7 @@ import Navigator from './components/layout/Navigator'
 export default class App extends React.Component {
   render() {
     return (
+      
       <PaperProvider>
         <Navigator/>
       </PaperProvider>  

@@ -102,6 +102,7 @@ export class AgregarItem extends Component {
     render() {
         return (
             <View style={styles.container}>
+                
                 <Picker
                     selectedValue={this.state.rubroSeleccionado}
                     style={styles.pickers}
@@ -138,15 +139,16 @@ export class AgregarItem extends Component {
                         />
                     )}
                 </Picker>
+                
+                <Button icon="add-a-photo" mode="contained" onPress={this.agregarItem}>
+                        Agregar Item
+                </Button>
                 <TextInput
                     label='Cantidad'
                     value={this.state.cantidad}
                     onChangeText={cantidad => this.setState({ cantidad })}
                     keyboardType='number-pad'
                 />
-                <Button icon="add-a-photo" mode="contained" onPress={this.agregarItem}>
-                        Agregar Item
-                </Button>
                 <Snackbar
                     visible={this.state.mostrarMensaje}
                     onDismiss={() => { this.setState({ mostrarMensaje: false }) }}

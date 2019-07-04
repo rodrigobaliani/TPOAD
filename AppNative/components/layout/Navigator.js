@@ -9,6 +9,8 @@ import Productos from '../Productos'
 import Clientes from '../Clientes'
 import Login from '../Login'
 import Pedido from '../Pedido'
+import Producto from '../Producto'
+import AltaProducto from '../AltaProducto'
 import AgregarItem from '../AgregarItem'
 
 const PedidosStack = createStackNavigator({
@@ -49,18 +51,49 @@ PedidosStack.navigationOptions = {
     tabBarIcon: ( <Icon name="md-cart" size={20} /> )
 }
 
+const ProductosStack = createStackNavigator({
+    Productos: {
+        screen: Productos,
+        navigationOptions: {
+            headerTitle: 'Productos',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+    },
+    Producto: { 
+        screen: Producto,
+        navigationOptions: {
+            headerTitle: 'Modificar Producto',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+     },
+     AltaProducto: { 
+        screen: AltaProducto,
+        navigationOptions: {
+            headerTitle: 'Alta Producto',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+     }
+     
+})
+
+ProductosStack.navigationOptions = {
+    tabBarLabel: "Productos",
+    tabBarIcon: ( <Icon name="md-cart" size={20} /> )
+}
+
 const AppTabNavigator = createMaterialBottomTabNavigator(
     {
         PedidosStack,
-        Productos: {
-            screen: Productos,
-            navigationOptions: {
-                tabBarLabel: "Productos",
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="md-beer" size={20} />
-                )
-            },
-        },
+        ProductosStack,
         Clientes: {
             screen: Clientes,
             navigationOptions: {
