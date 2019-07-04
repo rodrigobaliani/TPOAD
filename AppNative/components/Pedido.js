@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { DataTable, FAB } from 'react-native-paper'
 import Loading from './Loading'
 import {trackPromise} from "react-promise-tracker";
@@ -45,20 +45,25 @@ export class DetallePedido extends Component {
                         <DataTable.Title numeric>Cantidad</DataTable.Title>
                     </DataTable.Header>
                     <Loading/>
+                    <ScrollView>
                     {this.state.items.map((item) =>
-                        <DataTable.Row>
-                            <DataTable.Cell>{item.producto.nombre}</DataTable.Cell>
-                            <DataTable.Cell numeric>{item.cantidad}</DataTable.Cell>
-                        </DataTable.Row>
+                    
+                            <DataTable.Row>
+                                <DataTable.Cell>{item.producto.nombre}</DataTable.Cell>
+                                <DataTable.Cell numeric>{item.cantidad}</DataTable.Cell>
+                            </DataTable.Row>
                     )}
+                    </ScrollView>
                 </DataTable>
-                <FAB
-                    style={styles.fab}
-                    small
-                    icon="add"
-                    color="white"
-                    onPress = {() => this.props.navigation.navigate('AgregarItem', {numeroPedido: this.state.numeroPedido})}
-                />
+                {this.state.estado == 'pendiente'?
+                    <FAB
+                        style={styles.fab}
+                        small
+                        icon="add"
+                        color="white"
+                        onPress = {() => this.props.navigation.navigate('AgregarItem', {numeroPedido: this.state.numeroPedido})}
+                    />
+                : null }
             </View>
         )
     }

@@ -3,8 +3,8 @@ import { View } from 'react-native'
 import { usePromiseTracker } from 'react-promise-tracker'
 import { ActivityIndicator } from 'react-native-paper'
 
-const SmallLoading = () => {
-    const { promiseInProgress } = usePromiseTracker();
+const SmallLoading = (props) => {
+    const { promiseInProgress } = usePromiseTracker({area: props.area});
     return (
         <View>
             {

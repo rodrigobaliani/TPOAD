@@ -39,7 +39,7 @@ export class AgregarItem extends Component {
                 }).catch((error) => {
                     alert("Error en API" + error);
                 })
-        )
+        , 'rubros')
         fetch('http://10.0.2.2:8080/tpo/sub-rubros/')
             .then((res) => res.json()).then((json) => {
                 this.setState({
@@ -68,12 +68,17 @@ export class AgregarItem extends Component {
     }
 
     handleSubrubroSelect = (subrubro) => {
-        this.setState({ cargandoProductos: true })
         this.setState({ subrubroSeleccionado: subrubro })
-        this.setState({ subrubro: subrubro })
-        this.setState({ productosLista: this.state.productos.filter((producto) => subrubro == producto.subRubro.descripcion) })
-        this.setState({ cargandoProductos: false })
-
+        let subrubroaux = this.state.subrubros.filter( (sr) => subrubro == sr.descripcion)
+        trackPromise(fetch('http://10.0.2.2:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubroaux[0].codigo)
+            .then((res) => res.json()).then((json) => {
+                this.setState({
+                    productosLista: json
+                });
+            }).catch((error) => {
+                alert("Error en API" + error);
+            })
+        , 'productos')
     }
 
     handleProductoSelect = (producto) => {
@@ -131,7 +136,7 @@ export class AgregarItem extends Component {
                             />
                         )}
                     </Picker>
-                    <SmallLoading />
+                    <SmallLoading area = 'rubros'/>
                 </View>
                 <View style={styles.rowLine}>
                     <Picker
@@ -161,18 +166,20 @@ export class AgregarItem extends Component {
                             />
                         )}
                     </Picker>
-                    <ActivityIndicator animating={this.state.cargandoProductos} size='small' color='royalblue' />
+                    <SmallLoading area = 'productos'/>
                 </View>
                 <TextInput
                     label='Cantidad'
                     value={this.state.cantidad}
                     onChangeText={cantidad => this.setState({ cantidad })}
                     keyboardType='number-pad'
+                    style = {styles.cantInput}
                 />
                 <Button
                     mode="contained"
                     loading={this.state.agregandoItem}
                     onPress={this.agregarItem}
+                    style = {styles.addButton}
                 >Agregar Item
                 </Button>
                 <Snackbar
@@ -193,16 +200,29 @@ export class AgregarItem extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        display: 'flex',
         paddingTop: 10,
     },
     pickers: {
         height: 50,
         width: '80%',
+        marginBottom: 10
     },
     rowLine: {
         alignItems: 'center',
         flexDirection: 'row',
+        
     },
+    addButton: {
+        marginTop: 10,
+        width: '80%',
+        marginLeft: 5
+    },
+    cantInput: {
+        marginTop: 10,
+        width: '50%',
+        marginLeft: 5
+    }
 })
 
 

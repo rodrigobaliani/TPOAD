@@ -176,7 +176,7 @@ export class Pedidos extends Component {
                                         title={"Pedido " + pedido.numeroPedido}
                                         description={
                                             "Cuit: " + pedido.cliente.cuil +
-                                            "\nEstado: " + pedido.estado
+                                            "\nEstado: " + pedido.estado 
                                         }
                                     />
                                     <Divider />
