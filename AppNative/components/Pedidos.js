@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar } from 'react-native-paper'
+import { List, Divider, FAB, TextInput, Snackbar, ActivityIndicator } from 'react-native-paper'
 import { NavigationEvents } from "react-navigation";
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Loading from './Loading'
+import {trackPromise} from "react-promise-tracker";
 import 'prop-types';
 
 
@@ -32,15 +34,17 @@ export class Pedidos extends Component {
     }
 
     cargarPedidos = () => {
-        fetch('http://10.0.2.2:8080/tpo/pedidos/')
-            .then((res) => res.json()).then((json) => {
-                this.setState({
-                    pedidos: json
-                });
+        trackPromise(
+            fetch('http://10.0.2.2:8080/tpo/pedidos/')
+                .then((res) => res.json()).then((json) => {
+                    this.setState({
+                        pedidos: json
+                    });
 
-            }).catch((error) => {
-                alert("Error en carga de pedidos:" + error)
-            })
+                }).catch((error) => {
+                    alert("Error en carga de pedidos:" + error)
+                })
+        )
     }
 
     crearPedido = () => {
@@ -124,6 +128,7 @@ export class Pedidos extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <Loading/>
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.pedidos)}
                     renderRow={(pedido, rowId) => (
@@ -171,7 +176,7 @@ export class Pedidos extends Component {
                                         title={"Pedido " + pedido.numeroPedido}
                                         description={
                                             "Cuit: " + pedido.cliente.cuil +
-                                            "\nEstado: " + pedido.estado
+                                            "\nEstado: " + pedido.estado 
                                         }
                                     />
                                     <Divider />
@@ -211,7 +216,6 @@ export class Pedidos extends Component {
                 >
                     {this.state.mensaje}
                 </Snackbar>
-
                 <NavigationEvents onDidBlur={() => this.setState({ crearPedido: false })} />
             </View>
         )
