@@ -18,7 +18,7 @@ class Productos extends Component {
         productosLista: []
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         this.cargarProductos();
         this.cargarRubros();
     }
@@ -122,7 +122,7 @@ class Productos extends Component {
                 <h2 className="mb-3">Productos</h2>
 
                 <Form>
-                    <Form.Group id="#notthis" className="col-lg-7 no-padding-left">
+                    <Form.Group className="col-lg-7 no-padding-left">
                         <Form.Label>Rubro</Form.Label>
                         <Select options={this.state.rubrosOptions} onChange={this.handleSelectRubroOnChange}
                                 placeholder="Seleccione un rubro..."/>
@@ -173,7 +173,6 @@ class Productos extends Component {
                             </tr>
                         ))}
                     </React.Fragment>
-
 
                     </tbody>
                 </Table>

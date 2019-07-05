@@ -1,112 +1,114 @@
 import React, {Component} from 'react'
-import {FormGroup, Form, InputGroup, FormControl, Button, FormLabel} from 'react-bootstrap';
-import Rubro from './Rubro';
-import SubRubro from './SubRubro';
-import queryString from 'query-string';
+import {Button, Form, FormControl, FormGroup, InputGroup} from 'react-bootstrap';
+import Select from 'react-select';
 
-export class NuevoProducto extends Component {
+class NuevoProducto extends Component {
 
     state = {
-        rubro: '',
-        subRubro: '',
         nombre: '',
         codigoBarras: '',
         marca: '',
         precio: '',
-        subRubros: [],
-        rubros: [],
-        rubrosLista: [],
-        subRubrosLista: []
+
+        rubrosSource: [],
+        subRubrosSource: [],
+        rubrosOptions: [],
+        subRubrosOptions: [],
+        rubroSelectedOption: null,
+        subRubroSelectedOption: null
     }
 
-    componentDidMount = () => {
-        this.cargarRubros()
+    componentDidMount() {
+        this.cargarRubros();
     }
 
     generarProducto = () => {
-        var rubroAux = this.state.rubros.filter((rubro) => rubro.descripcion === this.state.rubro)
-        var subrubroAux = this.state.subRubros.filter((subRubro) => subRubro.descripcion === this.state.subRubro)
+        const rubro = this.state.rubrosSource.find(rubro => rubro.codigo === this.state.rubroSelectedOption.value);
+        const subRubro = this.state.subRubrosSource.find(subrubro => subrubro.codigo === this.state.subRubroSelectedOption.value);
         const producto = {
-            identificador: 1,
-            subRubro: subrubroAux[0], // FILTER DEVUELVE VECTOR
-            rubro: rubroAux[0], // FILTER DEVUELVE VECTOR
+            identificador: undefined,
+            rubro: rubro,
+            subRubro: subRubro,
             nombre: String(this.state.nombre),
             marca: String(this.state.marca),
             codigoBarras: String(this.state.codigoBarras),
             precio: parseFloat(this.state.precio)
         }
-        return producto;
+        console.log(producto);
+        return(producto);
     }
 
-    nuevoProducto = (e) => {
-        e.preventDefault()
+    guardarProducto = (e) => {
+        e.preventDefault();
         const producto = this.generarProducto();
         const url = 'http://localhost:8080/tpo/productos/alta';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(producto),
-            headers:{
-              'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
-        })
-        .then(res => {
-            if(res.ok)
-            {
+        }).then(res => {
+            if (res.ok) {
                 alert('Producto creado correctamente')
-            }  
-          });
-
+            }
+        });
     }
 
-    
 
-
-    handleSelectRubroChange = (e) => {
-        const rubro = e.target.value;
+    handleSelectRubroOnChange = (selectedOption) => {
+        const codigoRubro = selectedOption.value;
+        const subRubrosFiltradosPorRubro = this.state.subRubrosSource.filter((subRubro) => codigoRubro === subRubro.rubro.codigo);
         this.setState({
-            rubro: rubro,
-            subRubrosLista: this.state.subRubros.filter((subRubro) => rubro == subRubro.rubro.descripcion)
-        })
+            subRubrosOptions: subRubrosFiltradosPorRubro.map(function (subRubro) {
+                return {value: subRubro.codigo, label: subRubro.descripcion};
+            }),
+            rubroSelectedOption: selectedOption,
+            subRubroSelectedOption: null
+        });
     }
 
-    handleSelectSubRubroChange = (e) => {
-        this.setState({subRubro: e.target.value})
+    handleSelectSubRubroOnChange = (selectedOption) => {
+        this.setState({subRubroSelectedOption: selectedOption});
     }
 
-    handleSelectNombreChange = (e) => {
-        this.setState({nombre: e.target.value})
+    handleInputNombreOnChange = (event) => {
+        this.setState({nombre: event.target.value})
     }
 
-    handleSelectMarcaChange = (e) => {
-        this.setState({marca: e.target.value})
+    handleInputMarcaOnChange = (event) => {
+        this.setState({marca: event.target.value})
     }
 
-    handleSelectCodigoBarrasChange = (e) => {
-        this.setState({codigoBarras: e.target.value})
+    handleInputCodigoBarrasOnChange = (event) => {
+        this.setState({codigoBarras: event.target.value})
     }
 
-    handleSelectPrecioChange = (e) => {
-        this.setState({precio: e.target.value})
+    handleInputPrecioOnChange = (event) => {
+        this.setState({precio: event.target.value})
     }
 
 
     cargarRubros = () => {
         fetch('http://localhost:8080/tpo/rubros')
             .then((res) => res.json()).then((json) => {
+            const rubros = json;
             this.setState({
-                rubros: json
+                rubrosSource: rubros,
+                rubrosOptions: rubros.map(function (rubro) {
+                    return {value: rubro.codigo, label: rubro.descripcion}
+                })
             });
-
         }).catch((error) => {
-            alert("Error en cargarRubros" + error);
+            alert("Error en cargar rubros" + error);
         });
         fetch('http://localhost:8080/tpo/sub-rubros/')
             .then((res) => res.json()).then((json) => {
             this.setState({
-                subRubros: json
+                subRubrosSource: json
             });
         }).catch((error) => {
-            alert("Error en cargarSubrubros" + error);
+            alert("Error en cargar subrubros" + error);
         });
     }
 
@@ -114,107 +116,68 @@ export class NuevoProducto extends Component {
     render() {
         return (
             <Form>
-                <FormGroup>
-                    <h1>Nuevo Producto</h1>
-                    <br></br>
-                    <br></br>
-                    <InputGroup className="mb-3">
-                        <Form.Group>
-                            <Form.Label>Rubro</Form.Label>
-                            <Form.Control as="select" onClick={this.handleSelectRubroChange}>
-                                <React.Fragment>
-                                    {this.state.rubros.map((rubroAux) => (
-                                        <Rubro
-                                            key={rubroAux.codigo}
-                                            descripcion={rubroAux.descripcion}
-                                        />
-                                    ))}
-                                </React.Fragment>
-                            </Form.Control>
-                            <Form.Text className="text-muted">
-                                Es obligatorio seleccionar un rubro
-                            </Form.Text>
-                        </Form.Group>
+                <h2 className="mb-4">Nuevo Producto</h2>
+                <div className="col-lg-7 no-padding-left">
+                    <FormGroup>
+                        <Form className="mb-5">
+                            <Form.Group>
+                                <Form.Label>Rubro</Form.Label>
+                                <Select options={this.state.rubrosOptions} onChange={this.handleSelectRubroOnChange}
+                                        placeholder="Seleccione un rubro..."/>
+                            </Form.Group>
 
-                        <Form.Group controlId="formGridSubRubro">
+                            <Form.Group className="mt-4">
+                                <Form.Label>Sub Rubro</Form.Label>
+                                <Select options={this.state.subRubrosOptions} onChange={this.handleSelectSubRubroOnChange}
+                                        value={this.state.subRubroSelectedOption} placeholder="Seleccione un sub rubro..."/>
+                            </Form.Group>
+                        </Form>
 
-                            {this.state.rubro !== '' ?
-                                <React.Fragment>
-                                    <Form.Label>SubRubro</Form.Label>
-                                    <Form.Control as="select" onChange={this.handleSelectSubRubroChange}>
-                                        <React.Fragment>
-                                            {this.state.subRubrosLista.map((subRubro) => (
-                                                <SubRubro
-                                                    key={subRubro.codigo}
-                                                    descripcion={subRubro.descripcion}
-                                                />
-                                            ))}
-                                        </React.Fragment>
-                                    </Form.Control>
-                                </React.Fragment>
-                                :
-                                <React.Fragment>
-                                    <Form.Label>SubRubro</Form.Label>
-                                    <Form.Control as="select" onChange={this.handleSelectSubRubroChange}>
-                                        <option></option>
-                                    </Form.Control>
-                                </React.Fragment>
-                            }
-                            <Form.Text className="text-muted">
-                                Es obligatorio seleccionar un subrubro
-                            </Form.Text>
-                        </Form.Group>
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Nombre</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputNombreOnChange}/>
+                        </InputGroup>
 
-                    </InputGroup>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Marca</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputMarcaOnChange}/>
+                        </InputGroup>
 
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Nombre</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectNombreChange}
-                        />
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Marca</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectMarcaChange}
-                        />
-                    </InputGroup>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Código de Barras</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputCodigoBarrasOnChange}/>
+                        </InputGroup>
 
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Codigo Barras</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectCodigoBarrasChange}
-                        />
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default" size='100px'>Precio</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectPrecioChange}
-                        />
-                    </InputGroup>
-                    <br></br>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default" size='100px'>Precio</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputPrecioOnChange}/>
+                        </InputGroup>
+                    </FormGroup>
 
-                </FormGroup>
-                <Button variant='success' block type='submit' onClick={this.nuevoProducto.bind(this)}> Añadir </Button>
+
+                    <Button variant='success' className="float-right mt-2" type='submit'
+                            onClick={this.guardarProducto.bind(this)}>Guardar</Button>
+                </div>
             </Form>
         )
     }
