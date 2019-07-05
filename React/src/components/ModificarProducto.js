@@ -1,250 +1,204 @@
-import React, { Component } from 'react'
-import { FormGroup, Form, InputGroup, FormControl, Button, FormLabel } from 'react-bootstrap';
-import Rubro from './Rubro';
-import SubRubro from './SubRubro';
-
+import React, {Component} from 'react'
+import {Button, Form, FormControl, FormGroup, InputGroup} from 'react-bootstrap';
+import Select from 'react-select';
 
 class ModificarProducto extends Component {
 
     state = {
-        rubro: '',
-        subrubro:'',
         nombre: '',
-        codigoBarras:'',
-        marca:'',
-        precio:'',
-        subrubros:[],
-        rubros:[],
-        rubrosLista: [],
-        subrubrosLista:[],
-        producto:''
+        marca: '',
+        codigoBarras: '',
+        precio: '',
+
+        producto: null,
+
+        rubrosSource: [],
+        subRubrosSource: [],
+        rubrosOptions: [],
+        subRubrosOptions: [],
+        rubroSelectedOption: null,
+        subRubroSelectedOption: null
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         this.cargarRubros();
         this.cargarProducto(this.props.match.params.identificador);
-        /*this.setState({ nombre: this.state.producto.nombre })
-        this.setState({ marca: this.state.producto.marca })
-        this.setState({ codigoBarras: this.state.producto.codigoBarras})
-        this.setState({ precio: this.state.producto.precio})*/
     }
-
-
 
     cargarProducto = (identificador) => {
-        fetch('http://localhost:8080/tpo/productos/byId?identificador=' + identificador)
+        const url = 'http://localhost:8080/tpo/productos/byId?identificador=' + identificador;
+        fetch(url)
             .then((res) => res.json()).then((json) => {
-                this.setState({
-                    producto: json,
-                });
-            }).catch((error) => {
-                alert("Error en API" + error);
+            const producto = json;
+            this.setState({
+                nombre: producto.nombre,
+                marca: producto.marca,
+                codigoBarras: producto.codigoBarras,
+                precio: producto.precio,
+                rubroSelectedOption: {value: producto.rubro.codigo, label: producto.rubro.descripcion},
+                subRubroSelectedOption: {value: producto.subRubro.codigo, label: producto.subRubro.descripcion},
+                producto: producto
             });
+        }).catch((error) => {
+            alert("Error al cargar producto" + error);
+        });
     }
 
+    cargarRubros = () => {
+        fetch('http://localhost:8080/tpo/rubros')
+            .then((res) => res.json()).then((json) => {
+            const rubros = json;
+            this.setState({
+                rubrosSource: rubros,
+                rubrosOptions: rubros.map(function (rubro) {
+                    return {value: rubro.codigo, label: rubro.descripcion}
+                })
+            });
+        }).catch((error) => {
+            alert("Error en cargar rubros" + error);
+        });
+        fetch('http://localhost:8080/tpo/sub-rubros/')
+            .then((res) => res.json()).then((json) => {
+            this.setState({
+                subRubrosSource: json
+            });
+        }).catch((error) => {
+            alert("Error en cargar subrubros" + error);
+        });
+    }
 
-    generarProducto = () => {
-        var rubroAux = this.state.rubros.filter((rubro) => rubro.descripcion === this.state.rubro)
-        var subrubroAux = this.state.subrubros.filter((subrubro) => subrubro.descripcion === this.state.subrubro)
+    modificarProducto = (event) => {
+        event.preventDefault();
         const producto = {
-            identificador : this.state.producto.identificador,
-            subRubro: subrubroAux[0], // FILTER DEVUELVE VECTOR
-            rubro: rubroAux[0], // FILTER DEVUELVE VECTOR
-            nombre: String(this.state.nombre),
-            marca: String(this.state.marca),
-            codigoBarras: String(this.state.codigoBarras),
+            ...this.state.producto,
             precio: parseFloat(this.state.precio)
-        }
-       
-        return(producto)
-    }
-
-    modificarProducto = (e) => {
-        e.preventDefault();
-        const producto = this.generarProducto(); 
-        console.log("pr")
-        console.log(producto)
-        const url = 'http://localhost:8080/tpo/productos/modificar';
-        fetch(url, {
+        };
+        fetch('http://localhost:8080/tpo/productos/modificar', {
             method: 'PUT',
             body: JSON.stringify(producto),
-            headers :{
+            headers: {
                 'Content-Type': 'application/json'
-              }
+            }
         }).then(res => {
-            if(res.ok)
-            {
+            if (res.ok) {
                 alert('Producto modificado correctamente')
-            }  
-          });
-
-            /*.then().catch((error) => {
-                alert("Error en API NEW PRODUCTO" + error);
-              });;*/
-    }
-
-
-    handleSelectRubroChange = (e) => {
-        this.setState({ rubro: e.target.value })
-        const rubro = e.target.value
-        this.setState({ subrubrosLista: this.state.subrubros.filter((subrubro) => rubro == subrubro.rubro.descripcion) })
-    }
-
-    handleSelectSubRubroChange = (e) => {
-        this.setState({ subrubro: e.target.value })
-    }
-
-    handleSelectNombreChange = (e) => {
-        this.setState( { nombre: e.target.value })
-    }
-    
-    handleSelectMarcaChange = (e) => {
-        this.setState( { marca: e.target.value }) 
-    }
-
-    handleSelectCodigoBarrasChange = (e) => {
-        this.setState( { codigoBarras: e.target.value }) 
-    }
-
-    handleSelectPrecioChange = (e) => {
-        this.setState( { precio: e.target.value }) 
-    }
-
-    
-  cargarRubros = () => {
-    fetch('http://localhost:8080/tpo/rubros')
-      .then((res) => res.json()).then((json) => {
-        this.setState({
-          rubros: json
+            }
         });
+    }
 
-      }).catch((error) => {
-        alert("Error en cargarRubros" + error);
-      });
-    fetch('http://localhost:8080/tpo/sub-rubros/')
-      .then((res) => res.json()).then((json) => {
+    handleSelectRubroOnChange = (selectedOption) => {
+        const codigoRubro = selectedOption.value;
+        const subRubrosFiltradosPorRubro = this.state.subRubrosSource.filter((subRubro) => codigoRubro === subRubro.rubro.codigo);
         this.setState({
-          subrubros: json
+            subRubrosOptions: subRubrosFiltradosPorRubro.map(function (subRubro) {
+                return {value: subRubro.codigo, label: subRubro.descripcion};
+            }),
+            rubroSelectedOption: selectedOption,
+            subRubroSelectedOption: null
         });
-      }).catch((error) => {
-        alert("Error en cargarSubrubros" + error);
-      });
+    }
+
+    handleSelectSubRubroOnChange = (selectedOption) => {
+        this.setState({subRubroSelectedOption: selectedOption});
+    }
+
+    handleInputNombreOnChange = (event) => {
+        this.setState({nombre: event.target.value})
+    }
+
+    handleInputMarcaOnChange = (event) => {
+        this.setState({marca: event.target.value})
+    }
+
+    handleInputCodigoBarrasOnChange = (event) => {
+        this.setState({codigoBarras: event.target.value})
+    }
+
+    handleInputPrecioOnChange = (event) => {
+        this.setState({precio: event.target.value})
     }
 
 
     render() {
         return (
             <Form>
-                <FormGroup>
-                    <h1>Modificar Producto</h1>
-                    <br></br>
-                    <br></br>
-                    <InputGroup className="mb-3">
-                    <Form.Group>
-                        <Form.Label>Rubro</Form.Label>
-                        <Form.Control as="select" onClick={this.handleSelectRubroChange}>
-                            <React.Fragment>
-                                {
-                                    this.state.rubros.map((rubroAux) => (
-                                    <Rubro
-                                        key={rubroAux.codigo}
-                                        descripcion={rubroAux.descripcion}
-                                    />
-                                ))}
-                            </React.Fragment>
-                        </Form.Control>
-                        <Form.Text className="text-muted">
-                            Es obligatorio seleccionar un rubro
-                            </Form.Text>
-                    </Form.Group>
+                <h2 className="mb-4">Modificar Producto</h2>
+                <div className="col-lg-7 no-padding-left">
+                    <FormGroup>
+                        <Form className="mb-5">
+                            <Form.Group>
+                                <Form.Label>Rubro</Form.Label>
+                                <Select options={this.state.rubrosOptions} onChange={this.handleSelectRubroOnChange}
+                                        value={this.state.rubroSelectedOption}
+                                        placeholder="Seleccione un rubro..."
+                                        isDisabled={true}/>
+                            </Form.Group>
 
-                    <Form.Group controlId="formGridSubRubro">
+                            <Form.Group className="mt-4">
+                                <Form.Label>Sub Rubro</Form.Label>
+                                <Select options={this.state.subRubrosOptions}
+                                        onChange={this.handleSelectSubRubroOnChange}
+                                        value={this.state.subRubroSelectedOption}
+                                        placeholder="Seleccione un sub rubro..."
+                                        isDisabled={true}/>
+                            </Form.Group>
+                        </Form>
 
-                        {this.state.rubro !== '' ?
-                            <React.Fragment>
-                                <Form.Label>SubRubro</Form.Label>
-                                <Form.Control as="select" onChange={this.handleSelectSubRubroChange}>
-                                    <React.Fragment>
-                                        {this.state.subrubrosLista.map((subrubro) => (
-                                            <SubRubro
-                                                key={subrubro.codigo}
-                                                descripcion={subrubro.descripcion}
-                                            />
-                                        ))}
-                                    </React.Fragment>
-                                </Form.Control>
-                            </React.Fragment>
-                            :
-                            <React.Fragment>
-                                <Form.Label>SubRubro</Form.Label>
-                                <Form.Control as="select" onChange={this.handleSelectSubRubroChange}>
-                                    <option></option>
-                                </Form.Control>
-                            </React.Fragment>
-                        }
-                        <Form.Text className="text-muted">
-                            Es obligatorio seleccionar un subrubro
-                            </Form.Text>
-                    </Form.Group>
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Nombre</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputNombreOnChange}
+                                value={this.state.nombre}
+                                disabled={true}/>
+                        </InputGroup>
 
-                    </InputGroup>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Marca</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputMarcaOnChange}
+                                value={this.state.marca}
+                                disabled={true}/>
+                        </InputGroup>
 
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Nombre</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectNombreChange}
-                            value = {this.state.nombre}
-                        />
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Marca</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectMarcaChange}
-                            value = {this.state.marca}
-                        />
-                    </InputGroup>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default">Código de Barras</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputCodigoBarrasOnChange}
+                                value={this.state.codigoBarras}
+                                disabled={true}/>
+                        </InputGroup>
 
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default">Codigo Barras</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectCodigoBarrasChange}
-                            value = {this.state.codigoBarras}
-                        />
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-default" size='100px'>Precio</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                            onChange={this.handleSelectPrecioChange}
-                            value = {this.state.precio}
-                        />
-                    </InputGroup>
-                    <br></br>
+                        <InputGroup className="mt-4">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-default" size='100px'>Precio</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                onChange={this.handleInputPrecioOnChange}
+                                value={this.state.precio}/>
+                        </InputGroup>
+                    </FormGroup>
 
-                </FormGroup>
-                <Button variant='success' block type='submit' onClick = {this.modificarProducto.bind(this)}> Modificar </Button>
+
+                    <Button variant='success' className="float-right mt-2" type='submit'
+                            onClick={this.modificarProducto.bind(this)}>Modificar</Button>
+                </div>
             </Form>
         )
     }
 }
-
 
 export default ModificarProducto
