@@ -28,9 +28,11 @@ export class Productos extends Component {
     }
 
     componentDidMount() {
-        this.cargarProductos()
-        this.cargarRubros()
-        this.cargarSubRubros()
+        this.cargarRubros();
+        this.cargarSubRubros();
+        this._subscribe = this.props.navigation.addListener('didFocus', () => {
+            this.cargarProductos();
+        });
     }
     
     mostrarMensaje = (mensaje) => {
@@ -67,8 +69,7 @@ export class Productos extends Component {
             fetch('http://10.0.2.2:8080/tpo/productos/')
                 .then((res) => res.json()).then((json) => {
                 this.setState({
-                    productos: json,
-                    productosLista:json
+                    productos: json
                 });
             }).catch((error) => {
                 alert("Error en API: Metodo getProductos" + error);
@@ -115,7 +116,7 @@ export class Productos extends Component {
         return (
             <View>
                 <Button icon="add-circle-outline" mode="contained" onPress={this.nuevoProducto}>
-                        Nuevo Producto
+                        Alta Producto
                 </Button>
                  <Picker
                     selectedValue={this.state.rubroSeleccionado}

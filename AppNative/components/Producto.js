@@ -117,6 +117,7 @@ export class Producto extends Component {
                     selectedValue={this.state.rubroSeleccionado}
                     style={styles.pickers}
                     onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
+                    enabled = {false}
                 >
                     {this.state.rubros.map((rubro) =>
                         <Picker.Item
@@ -129,6 +130,7 @@ export class Producto extends Component {
                     selectedValue={this.state.subrubroSeleccionado}
                     style={styles.pickers}
                     onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
+                    enabled = {false}
                 >
                     {this.state.subrubrosLista.map((subrubro) =>
                         <Picker.Item
@@ -142,18 +144,21 @@ export class Producto extends Component {
                     value={this.state.nombre}
                     onChangeText={nombre => this.setState({ nombre })}
                     keyboardType='default'
+                    disabled={true}
                 />
                 <TextInput
                     label='Marca'
                     value={this.state.marca}
                     onChangeText={marca => this.setState({ marca })}
                     keyboardType='default'
+                    disabled={true}
                 />
                 <TextInput
                     label='Codigo de Barras'
                     value={this.state.codigoBarras}
                     onChangeText={codigoBarras => this.setState({ codigoBarras })}
                     keyboardType='number-pad'
+                    disabled={true}
                 />
                 <TextInput
                     label='Precio'
@@ -161,7 +166,7 @@ export class Producto extends Component {
                     onChangeText={precio => this.setState({ precio })}
                     keyboardType='number-pad'
                 />
-                <Button icon="add-circle-outline" mode="contained" onPress={this.agregarItem}>
+                <Button icon="add-circle-outline" mode="contained" onPress={this.modificarProducto}>
                     Modificar Producto
                 </Button>
             </View>
