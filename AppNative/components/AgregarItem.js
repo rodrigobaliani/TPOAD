@@ -27,7 +27,7 @@ export class AgregarItem extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        const numeroPedido = navigation.getParam('numeroPedido', 'NO-ID');
+        const numeroPedido = navigation.getParam('numeroPedido');
         this.setState({ numeroPedido: numeroPedido })
         trackPromise(
             fetch('http://10.0.2.2:8080/tpo/rubros')

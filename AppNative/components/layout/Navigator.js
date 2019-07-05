@@ -90,19 +90,29 @@ ProductosStack.navigationOptions = {
     tabBarIcon: ( <Icon name="md-cart" size={20} /> )
 }
 
+const ClientesStack = createStackNavigator({
+    Clientes: {
+        screen: Clientes,
+        navigationOptions: {
+            headerTitle: 'Clientes',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+    }
+})
+
+ClientesStack.navigationOptions = {
+    tabBarLabel: "Clientes",
+    tabBarIcon: ( <Icon name="md-people" size={20} /> )
+}
+
 const AppTabNavigator = createMaterialBottomTabNavigator(
     {
         PedidosStack,
         ProductosStack,
-        Clientes: {
-            screen: Clientes,
-            navigationOptions: {
-                tabBarLabel: "Clientes",
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="md-people" size={20} />
-                )
-            },
-        }
+        ClientesStack
     },
     {
         barStyle: { backgroundColor: 'royalblue' },

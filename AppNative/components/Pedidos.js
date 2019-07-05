@@ -29,8 +29,10 @@ export class Pedidos extends Component {
 
 
     componentDidMount() {
-        this.cargarPedidos()
-
+        const noCuitCode = 'NO-CUIT';
+        const { navigation } = this.props;
+        const cuit = navigation.getParam('cuitCliente', noCuitCode);
+        (cuit != noCuitCode) ? this.cargarPedidosByCliente(cuit) : this.cargarPedidos();
     }
 
     cargarPedidos = () => {
@@ -45,6 +47,19 @@ export class Pedidos extends Component {
                     alert("Error en carga de pedidos:" + error)
                 })
         )
+    }
+
+    cargarPedidosByCliente = (cuit) => {
+        const url = 'http://10.0.2.2:8080/tpo/pedidos/pedidos-by-cliente?cuit=' + cuit;
+        fetch(url)
+            .then((res) => res.json()).then((json) => {
+            this.setState({
+                pedidos: json
+            });
+
+        }).catch((error) => {
+            alert("Error en cargar pedidos by cliente" + error);
+        })
     }
 
     crearPedido = () => {
