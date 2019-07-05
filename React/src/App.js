@@ -19,7 +19,6 @@ class App extends Component {
     }
 
     handleChildCerrarSesion = () => {
-        console.log("app cerrando sesion");
         this.setState({
             isSessionActive: false,
             username: ''

@@ -34,7 +34,6 @@ class NuevoProducto extends Component {
             codigoBarras: String(this.state.codigoBarras),
             precio: parseFloat(this.state.precio)
         }
-        console.log(producto);
         return(producto);
     }
 

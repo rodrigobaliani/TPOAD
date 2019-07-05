@@ -68,16 +68,6 @@ class Productos extends Component {
         );
     }
 
-    setProductoAModificar = (numeroProducto) => {
-        console.log(numeroProducto)
-        if (numeroProducto == -1)
-            this.setState({productoAModificar: null})
-        else {
-            const producto = this.state.productos.filter((producto) => producto.identificador === numeroProducto)
-            this.setState({productoAModificar: producto})
-        }
-    }
-
     eliminarProducto = (productoAux) => {
         const url = 'http://localhost:8080/tpo/productos/';
         fetch(url, {method: 'DELETE', body: {'producto': productoAux}})
@@ -90,11 +80,6 @@ class Productos extends Component {
 
     modificarProducto = (identificador) => {
         this.props.history.push('/productos/modificar/' + (identificador))
-        /* const url = 'http://localhost:8080/tpo/productos/modificar';
-         fetch(url, { method: 'put', body: {'producto': productoAux}})
-             .then();
-         this.setState({ productos: [...this.state.productos.filter(producto => producto !== productoAux)] })
-         this.setState({ productos: [...this.state.productos.filter(producto => producto !== productoAux)] })*/
     }
 
     handleSelectRubroOnChange = (selectedOption) => {

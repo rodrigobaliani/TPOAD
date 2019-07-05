@@ -51,7 +51,6 @@ export class Pedidos extends Component {
         const send = 'http://localhost:8080/tpo/pedidos/crear-con-cuit?cuit=' + cuit;
         fetch(send)
             .then((res) => res.json()).then((responseData) => {
-            console.log(responseData)
             if (Number.isInteger(responseData)) {
                 const url = 'http://localhost:8080/tpo/pedidos/byId?numero='
                 const send = url + responseData

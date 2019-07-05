@@ -5,7 +5,6 @@ import {withRouter} from 'react-router-dom'
 export class Login extends Component {
 
     handleSuccessfulLogin = (username) => {
-        console.log(this.props);
         this.props.appLogin(username);
         this.props.history.push("/home");
     }
@@ -20,7 +19,6 @@ export class Login extends Component {
                     this.handleSuccessfulLogin(username);
                 } else {
                     alert(json.message);
-                    console.log(json);
                 }
             }
         );

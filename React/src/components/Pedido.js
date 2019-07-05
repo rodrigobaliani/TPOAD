@@ -18,7 +18,6 @@ export class Pedido extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params.numeroPedido);
         const send = 'http://localhost:8080/tpo/pedidos/byId?numero=' + this.props.match.params.numeroPedido
         fetch(send)
             .then((res) => res.json()).then((responseData) => {
