@@ -64,6 +64,7 @@ class Productos extends Component {
                 });
             }).catch((error) => {
                 alert("Error en API" + error);
+                console.log("ERROR EN GET PRODUCTOS")
             })
         );
     }
