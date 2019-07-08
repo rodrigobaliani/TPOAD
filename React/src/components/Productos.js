@@ -71,13 +71,25 @@ class Productos extends Component {
 
     eliminarProducto = (productoAux) => {
         const url = 'http://localhost:8080/tpo/productos/';
-        fetch(url, {method: 'DELETE', body: {'producto': productoAux}})
+        /*console.log(productoAux.identificador)
+        console.log(productoAux.subRubro)
+        console.log(productoAux.rubro)
+        console.log(productoAux.nombre)
+        console.log(productoAux.marca)
+        console.log(productoAux.codigoBarras)
+        console.log(productoAux.precio)*/
+        fetch(url, {method: 'DELETE', body: JSON.stringify(productoAux), headers: {
+            'Content-Type': 'application/json'
+        }})
             .then((res) => {
                 if (res.ok) {
                     this.setState({productos: [...this.state.productosSource.filter(producto => producto != productoAux)]})
+                    console.log("ELIMINAR SALE BIEN")
                 }
             });
     }
+
+
 
     modificarProducto = (identificador) => {
         this.props.history.push('/productos/modificar/' + (identificador))

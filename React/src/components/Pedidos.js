@@ -133,7 +133,7 @@ export class Pedidos extends Component {
                                     <Dropdown.Item
                                         onClick={this.itemsPedido.bind(this, pedido.numeroPedido)}>Items</Dropdown.Item>
                                     <Dropdown.Item onClick={this.facturarPedido.bind(this, pedido.numeroPedido)}
-                                                   disabled={this.estaFacturado.bind(this, this.estado)}>Facturar</Dropdown.Item>
+                                                   disabled={this.estaFacturado(pedido.estado)}>Facturar</Dropdown.Item>
                                     <Dropdown.Item
                                         onClick={this.eliminarPedido.bind(this, pedido.numeroPedido)}>Eliminar</Dropdown.Item>
                                 </DropdownButton>
