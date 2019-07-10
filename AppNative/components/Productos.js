@@ -83,11 +83,14 @@ export class Productos extends Component {
         {
         method: 'DELETE',
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},  
-        body: (JSON.stringify({'producto': productoAux}))})
+        body: (JSON.stringify(productoAux))})
             .then((res) => {
                 if (res.ok) {
-                    this.setState({productos: [...this.state.productos.filter(producto => producto != productoAux)]})
                     alert('Producto eliminado correctamente.')
+                    this.cargarProductos();
+                }
+                else{
+                    alert('El producto no se pudo eliminar')
                 }
             });
     }
@@ -162,7 +165,7 @@ export class Productos extends Component {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.backRightBtn, styles.backRightBtnRight]}
-                                    onPress={this.eliminarProducto.bind(this, producto)}
+                                    onPress={this.eliminarProducto.bind(this,producto)}
                                 >
                                     <View style={styles.icons}>
                                         <Icon
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
     rowFront: {
         backgroundColor: 'snow',
         justifyContent: 'center',
+        padding: 15
     },
     rowBack: {
         alignItems: 'center',
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingLeft: 15,
+        padding: 15
     },
     backRightBtn: {
         alignItems: 'center',

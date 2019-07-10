@@ -19,16 +19,19 @@ export class Producto extends Component {
         producto: '',
         rubros: [],
         subrubros: [],
-        rubroSeleccionado: '',
-        subrubroSeleccionado : '',
         subrubrosLista: []
     }
 
     componentDidMount() {
+        this.cargarRubros();
+        this.cargarSubRubros();
         this._subscribe = this.props.navigation.addListener('didFocus', () => {
             this.cargarProducto();
         });
-            fetch('http://10.0.2.2:8080/tpo/rubros')
+    }
+
+    cargarRubros = () => {
+        fetch('http://10.0.2.2:8080/tpo/rubros')
             .then((res) => res.json()).then((json) => {
                 this.setState({
                     rubros: json
@@ -37,6 +40,9 @@ export class Producto extends Component {
             }).catch((error) => {
                 alert("Error en API. Metodo getRubros" + error);
             });
+    }
+
+    cargarSubRubros = () => {
         fetch('http://10.0.2.2:8080/tpo/sub-rubros/')
             .then((res) => res.json()).then((json) => {
                 this.setState({
@@ -48,7 +54,6 @@ export class Producto extends Component {
     }
 
     cargarProducto = () => {
-        
         const { navigation } = this.props;
         const identificador = navigation.getParam('identificador', 'NO-ID');
         const send = 'http://10.0.2.2:8080/tpo/productos/byId?identificador=' + identificador
@@ -60,41 +65,29 @@ export class Producto extends Component {
                 this.setState({ codigoBarras: responseData.codigoBarras })
                 this.setState({ marca: responseData.marca })
                 this.setState({ precio: parseFloat(responseData.precio)})
-                this.generarProducto()
+                this.setState({ identificador: responseData.identificador })
+                this.setState({ producto: this.generarProducto() })
             });
     }
 
-    handleRubroSelect = (rubro) => {
-        this.setState({ rubroSeleccionado: rubro })
-        this.setState({ subrubrosLista: this.state.subrubros.filter((subrubro) => rubro == subrubro.rubro.descripcion) })
-    }
-
-    handleSubrubroSelect = (subrubro) => {
-        this.setState({ subrubroSeleccionado: subrubro })
-        this.setState({ subrubro: subrubro })
-    }
-
     generarProducto = () => {
-        var rubroAux = this.state.rubroSeleccionado
-        var subrubroAux = this.state.subrubroSeleccionado
-        const producto = {
-            identificador: 1,
-            subRubro: subrubroAux,
-            rubro: rubroAux, 
+        const productoAux = {
+            identificador: this.state.identificador,
+            subRubro: this.state.subrubro,
+            rubro: this.state.rubro, 
             nombre: String(this.state.nombre),
             marca: String(this.state.marca),
             codigoBarras: String(this.state.codigoBarras),
             precio: parseFloat(this.state.precio)
         }
-        return producto;
-    }
+        return productoAux;
+        }
 
     modificarProducto = () => {
-        const producto = this.generarProducto();
         const url = 'http://10.0.2.2:8080/tpo/productos/modificar';
         fetch(url, {
             method: 'PUT',
-            body: JSON.stringify(producto),
+            body: JSON.stringify(this.state.producto),
             headers:{
               'Content-Type': 'application/json'
             }
@@ -103,20 +96,20 @@ export class Producto extends Component {
             if(res.ok)
             {
                 alert('Producto modificado correctamente')
+            }
+            else
+            {
+                alert("NO SE PUDO MOFICIAR EL PRODUCTO")
             }  
           });   
     }
-
-
-
 
     render() {
         return (
             <View style={styles.container}>
                 <Picker
-                    selectedValue={this.state.rubroSeleccionado}
+                    selectedValue={this.state.rubro.descripcion}
                     style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
                     enabled = {false}
                 >
                     {this.state.rubros.map((rubro) =>
@@ -127,12 +120,11 @@ export class Producto extends Component {
                     )}
                 </Picker>
                 <Picker
-                    selectedValue={this.state.subrubroSeleccionado}
+                    selectedValue={this.state.subrubro.descripcion}
                     style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
                     enabled = {false}
                 >
-                    {this.state.subrubrosLista.map((subrubro) =>
+                    {this.state.subrubros.map((subrubro) =>
                         <Picker.Item
                             label={subrubro.descripcion}
                             value={subrubro.descripcion}
