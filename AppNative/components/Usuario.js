@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
-import { Button, View } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar} from 'react-native-paper'
+import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
+import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
+import { NavigationEvents } from "react-navigation";
+import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
+import Icon from 'react-native-vector-icons/Ionicons';
+import 'prop-types';
 
-export class Login extends Component {
+export class Usuario extends Component {
+
     state = {
         username: '',
         password: ''
@@ -24,8 +29,7 @@ export class Login extends Component {
     }
     
     handleSuccessfulLogin = () => {
-        alert("Bienvenido " + this.state.username)
-        this.props.navigation.navigate('App')
+        this.props.navigation.navigate('CambiarPassword', { username: this.state.username, password: this.state.password})
     }
     
     
@@ -46,15 +50,17 @@ export class Login extends Component {
                     textContentType = 'password'
                     secureTextEntry={true}
                 />
-
-
                 <Button
-                    title="Ingresar"
-                    onPress={() => this.autenticar()}
-                />
+                mode="contained"
+                title="Cambiar Contraseña"
+                onPress={() => this.autenticar()}>
+                Acceder
+
+                </Button>
             </View>
         )
     }
 }
 
-export default Login
+
+export default Usuario

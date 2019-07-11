@@ -12,6 +12,8 @@ import Pedido from '../Pedido'
 import Producto from '../Producto'
 import AltaProducto from '../AltaProducto'
 import AgregarItem from '../AgregarItem'
+import Usuario from '../Usuario'
+import CambiarPassword from '../CambiarPassword'
 
 const PedidosStack = createStackNavigator({
     Pedidos: {
@@ -108,11 +110,42 @@ ClientesStack.navigationOptions = {
     tabBarIcon: ( <Icon name="md-people" size={20} /> )
 }
 
+const UsuarioStack = createStackNavigator({
+    Usuario: {
+        screen: Usuario,
+        navigationOptions: {
+            headerTitle: 'Configuración del Usuario',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+    },
+    CambiarPassword: { 
+        screen: CambiarPassword,
+        navigationOptions: {
+            headerTitle: 'Cambio de Password',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+     }
+})
+
+UsuarioStack.navigationOptions = {
+    tabBarLabel: "Configuración de Usuario",
+    tabBarIcon: ( <Icon name="md-people" size={20} /> )
+}
+
+
+
 const AppTabNavigator = createMaterialBottomTabNavigator(
     {
         PedidosStack,
         ProductosStack,
-        ClientesStack
+        ClientesStack,
+        UsuarioStack
     },
     {
         barStyle: { backgroundColor: 'royalblue' },
