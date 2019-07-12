@@ -86,7 +86,6 @@ export class Pedidos extends Component {
 
 
     facturarPedido = (numeroPedido, estado, cantItems) => {
-        alert(cantItems)
         if (estado == 'facturado')
             this.mostrarMensaje('No se puede facturar un pedido ya facturado.')
         else {

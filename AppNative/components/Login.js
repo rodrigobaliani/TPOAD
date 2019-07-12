@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Button, View } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar} from 'react-native-paper'
+import { View, StyleSheet } from 'react-native'
+import { Button, TextInput, Snackbar } from 'react-native-paper'
 
 export class Login extends Component {
     state = {
         username: '',
-        password: ''
+        password: '',
+        cambioPass: false
     }
 
     autenticar = () => {
@@ -16,23 +17,25 @@ export class Login extends Component {
             .then((res) => res.json()).then((json) => {
                 if (json == true) {
                     this.handleSuccessfulLogin();
-                } else {
+                }
+                else {
                     alert(json.message)
                 }
             }
-        );
+            );
     }
-    
+
     handleSuccessfulLogin = () => {
         alert("Bienvenido " + this.state.username)
-        this.props.navigation.navigate('App')
+        this.props.navigation.navigate('App', {username: this.state.username})
     }
-    
-    
+
+
     render() {
         return (
-            <View style={{ flex: 5, justifyContent: 'center'}}>
+            <View style={styles.container}>
                 <TextInput
+                    style={styles.input}
                     label='Usuario'
                     value={this.state.username}
                     onChangeText={username => this.setState({ username })}
@@ -40,21 +43,51 @@ export class Login extends Component {
                 />
 
                 <TextInput
+                    style={styles.input}
                     label='Password'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
-                    textContentType = 'password'
+                    textContentType='password'
                     secureTextEntry={true}
                 />
-
-
-                <Button
-                    title="Ingresar"
-                    onPress={() => this.autenticar()}
-                />
+                <View style={{ flexDirection: 'row' }}>
+                    <Button
+                        style={styles.buttons}
+                        mode="contained"
+                        onPress={() => this.autenticar()}
+                    >
+                        Ingresar
+                    </Button>
+                    <Button
+                        style={styles.buttons}
+                        mode="contained"
+                        onPress={ () =>  this.props.navigation.navigate('CambiarPasswordSinLogin') }
+                    >
+                        Cambiar Pass
+                    </Button>
+                </View>
             </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    input: {
+        width: '90%',
+        height: 50,
+        marginBottom: 10,
+    },
+    buttons: {
+        width: '45%',
+        height: 50,
+        padding: 10,
+        marginBottom: 10,
+    },
+})
 
 export default Login

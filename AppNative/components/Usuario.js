@@ -13,6 +13,12 @@ export class Usuario extends Component {
         password: ''
     }
 
+    componentDidMount() {
+        const { navigation } = this.props;
+        const usernameAux = navigation.getParam('username', 'NO-ID');
+        alert(usernameAux)
+    }
+
     autenticar = () => {
         const usuario = this.state.username
         const password = this.state.password
@@ -25,17 +31,17 @@ export class Usuario extends Component {
                     alert(json.message)
                 }
             }
-        );
+            );
     }
-    
+
     handleSuccessfulLogin = () => {
-        this.props.navigation.navigate('CambiarPassword', { username: this.state.username, password: this.state.password})
+        this.props.navigation.navigate('CambiarPassword', { username: this.state.username, password: this.state.password })
     }
-    
-    
+
+
     render() {
         return (
-            <View style={{ flex: 5, justifyContent: 'center'}}>
+            <View style={{ flex: 5, justifyContent: 'center' }}>
                 <TextInput
                     label='Usuario'
                     value={this.state.username}
@@ -47,15 +53,15 @@ export class Usuario extends Component {
                     label='Password'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
-                    textContentType = 'password'
+                    textContentType='password'
                     secureTextEntry={true}
                 />
                 <Button
-                mode="contained"
-                title="Cambiar Contraseña"
-                onPress={() => this.autenticar()}>
-                Acceder
-
+                    mode="contained"
+                    title="Cambiar Contraseña"
+                    onPress={() => this.autenticar()}>
+                    Acceder
+    
                 </Button>
             </View>
         )

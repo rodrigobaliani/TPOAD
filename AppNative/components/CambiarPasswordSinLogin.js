@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
-import { NavigationEvents } from "react-navigation";
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text } from 'react-native'
+import { TextInput, Button, Snackbar } from 'react-native-paper'
 import 'prop-types';
 
-export class CambiarPassword extends Component {
+export class CambiarPasswordSinLogin extends Component {
 
     state = {
         username: '',
@@ -17,22 +14,15 @@ export class CambiarPassword extends Component {
     }
 
     componentDidMount() {
-        this.getUser();
-    }
 
-    getUser = () => {
-        const { navigation } = this.props;
-        const usernameAux = navigation.getParam('username', 'NO-ID');
-        this.setState({ username: usernameAux });
     }
 
     verificarPassword = () => {
-        if(this.state.password == this.state.newPassword){
+        if (this.state.password == this.state.newPassword) {
             this.cambiarPassword();
         }
-        else
-        {
-            alert("Las contraseñas ingresadas no son iguales");
+        else {
+            this.mostrarMensaje("Las contraseñas ingresadas no son iguales");
         }
     }
 
@@ -40,8 +30,8 @@ export class CambiarPassword extends Component {
         const url = 'http://10.0.2.2:8080/tpo/cambio-password?nombre=' + this.state.username + '&password=' + this.state.password;
         fetch(url, {
             method: 'GET',
-            headers:{
-              'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         })
         .then(response => {
@@ -54,10 +44,11 @@ export class CambiarPassword extends Component {
             }
             else {
                 alert('Contraseña cambiada correctamente')
-                this.props.navigation.navigate('App')
+                this.props.navigation.navigate('Login')
             }
         })
     }
+
 
     mostrarMensaje = (mensaje) => {
         this.setState({
@@ -65,21 +56,26 @@ export class CambiarPassword extends Component {
             mostrarMensaje: true
         })
     }
-    
 
     render() {
         return (
             <View>
-                <Text> USUARIO  {this.state.username}</Text>
 
                 <Text> Cambiar Contraseña </Text>
+
+                <TextInput
+                    label='Usuario'
+                    value={this.state.username}
+                    onChangeText={username => this.setState({ username })}
+                    keyboardType='default'
+                />
 
                 <TextInput
                     label='Ingrese nueva contraseña'
                     value={this.state.newPassword}
                     onChangeText={newPassword => this.setState({ newPassword })}
                     keyboardType='default'
-                    textContentType = 'password'
+                    textContentType='password'
                     secureTextEntry={true}
                 />
 
@@ -88,7 +84,7 @@ export class CambiarPassword extends Component {
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
                     keyboardType='default'
-                    textContentType = 'password'
+                    textContentType='password'
                     secureTextEntry={true}
                 />
 
@@ -110,4 +106,4 @@ export class CambiarPassword extends Component {
     }
 }
 
-export default CambiarPassword
+export default CambiarPasswordSinLogin

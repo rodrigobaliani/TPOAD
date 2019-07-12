@@ -14,6 +14,7 @@ import AltaProducto from '../AltaProducto'
 import AgregarItem from '../AgregarItem'
 import Usuario from '../Usuario'
 import CambiarPassword from '../CambiarPassword'
+import CambiarPasswordSinLogin from '../CambiarPasswordSinLogin'
 
 const PedidosStack = createStackNavigator({
     Pedidos: {
@@ -134,8 +135,8 @@ const UsuarioStack = createStackNavigator({
 })
 
 UsuarioStack.navigationOptions = {
-    tabBarLabel: "Configuración de Usuario",
-    tabBarIcon: ( <Icon name="md-people" size={20} /> )
+    tabBarLabel: "Usuario",
+    tabBarIcon: ( <Icon name="md-contact" size={20} /> )
 }
 
 
@@ -168,8 +169,10 @@ const AppStackNavigator = createStackNavigator(
         AppTabNavigator: AppTabNavigator
     });
 
+
 const AppSwitchNavigator = createSwitchNavigator({
     Login: { screen: Login },
+    CambiarPasswordSinLogin: { screen: CambiarPasswordSinLogin },
     App: { screen: AppStackNavigator }
 });
 
