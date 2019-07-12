@@ -13,12 +13,6 @@ export class Usuario extends Component {
         password: ''
     }
 
-    componentDidMount() {
-        const { navigation } = this.props;
-        const usernameAux = navigation.getParam('username', 'NO-ID');
-        alert(usernameAux)
-    }
-
     autenticar = () => {
         const usuario = this.state.username
         const password = this.state.password
