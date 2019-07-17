@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
-import { NavigationEvents } from "react-navigation";
+import { List, Divider, FAB, TextInput, Snackbar, ActivityIndicator } from 'react-native-paper'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { trackPromise } from "react-promise-tracker";
+import Loading from './Loading'
+import SmallLoading from './SmallLoading'
 import 'prop-types';
 
 export class Productos extends Component {
@@ -19,7 +21,8 @@ export class Productos extends Component {
         subrubros: [],
         rubroSeleccionado: '',
         subrubroSeleccionado: '',
-        subrubrosLista: []
+        subrubrosLista: [],
+        cargandoSubrubros: true
     }
 
     constructor(props) {
@@ -34,8 +37,8 @@ export class Productos extends Component {
             //this.cargarRubros()
             //this.cargarSubRubros()
             //this.handleRubroSelect('Aderezos')
-           // this.handleSubrubroSelect('Mayonesa')
-           // this.cargarProductos('Mayonesa');
+            // this.handleSubrubroSelect('Mayonesa')
+            // this.cargarProductos('Mayonesa');
         });
     }
 
@@ -47,7 +50,7 @@ export class Productos extends Component {
     }
 
     cargarRubros = () => {
-        fetch('http://10.0.2.2:8080/tpo/rubros')
+        trackPromise(fetch('http://10.0.2.2:8080/tpo/rubros')
             .then((res) => res.json()).then((json) => {
                 this.setState({
                     rubros: json
@@ -55,7 +58,8 @@ export class Productos extends Component {
 
             }).catch((error) => {
                 alert("Error en API. Metodo getRubros" + error);
-            });
+            })
+            , 'rubros')
     }
 
     cargarSubRubros = () => {
@@ -80,11 +84,11 @@ export class Productos extends Component {
             })
             .then((res) => {
                 if (res.ok) {
-                    alert('Producto eliminado correctamente.')
+                    this.mostrarMensaje('Producto eliminado correctamente.')
                     this.cargarProductos();
                 }
                 else {
-                    alert('El producto no se pudo eliminar')
+                    this.mostrarMensaje('El producto no se pudo eliminar')
                 }
             });
     }
@@ -105,12 +109,13 @@ export class Productos extends Component {
 
     handleSubrubroSelect = (subrubro) => {
         this.setState({ subrubroSeleccionado: subrubro })
+        this.setState({ cargandoSubrubros: false })
         this.cargarProductos(subrubro)
     }
 
     cargarProductos = (subrubro) => {
         let subrubroaux = this.state.subrubros.filter((sr) => subrubro == sr.descripcion)
-        fetch('http://10.0.2.2:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubroaux[0].codigo)
+        trackPromise(fetch('http://10.0.2.2:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubroaux[0].codigo)
             .then((res) => res.json()).then((json) => {
                 this.setState({
                     productosLista: json
@@ -118,38 +123,43 @@ export class Productos extends Component {
             }).catch((error) => {
                 alert("Error en API" + error);
             })
+        , 'productos')
     }
 
     render() {
         return (
-            <View>
-                <Button icon="add-circle-outline" mode="contained" onPress={this.nuevoProducto}>
-                    Alta Producto
-                </Button>
-                <Picker
-                    selectedValue={this.state.rubroSeleccionado}
-                    style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
-                >
-                    {this.state.rubros.map((rubro) =>
-                        <Picker.Item
-                            label={rubro.descripcion}
-                            value={rubro.descripcion}
-                        />
-                    )}
-                </Picker>
-                <Picker
-                    selectedValue={this.state.subrubroSeleccionado}
-                    style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
-                >
-                    {this.state.subrubrosLista.map((subrubro) =>
-                        <Picker.Item
-                            label={subrubro.descripcion}
-                            value={subrubro.descripcion}
-                        />
-                    )}
-                </Picker>
+            <View style={styles.container}>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <Picker
+                        selectedValue={this.state.rubroSeleccionado}
+                        style={styles.pickers}
+                        onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
+                    >
+                        {this.state.rubros.map((rubro) =>
+                            <Picker.Item
+                                label={rubro.descripcion}
+                                value={rubro.descripcion}
+                            />
+                        )}
+                    </Picker>
+                    <SmallLoading area='rubros' />
+                </View>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <Picker
+                        selectedValue={this.state.subrubroSeleccionado}
+                        style={styles.pickers}
+                        onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
+                    >
+                        {this.state.subrubrosLista.map((subrubro) =>
+                            <Picker.Item
+                                label={subrubro.descripcion}
+                                value={subrubro.descripcion}
+                            />
+                        )}
+                    </Picker>
+                    <ActivityIndicator animating={this.state.cargandoSubrubros} size='small' color='royalblue' />
+                </View>
+                <Loading area = 'productos' />
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.productosLista)}
                     renderRow={(producto, rowId) => (
@@ -164,7 +174,7 @@ export class Productos extends Component {
                                     onPress={this.modificarProducto.bind(this, producto.identificador)}
                                 >
                                     <View style={styles.icons}>
-                                        <Icon name="md-list" color="white" size={40} />
+                                        <Icon name="md-build" color="white" size={40} />
                                         <Text style={styles.iconText}>Modificar</Text>
                                     </View>
                                 </TouchableOpacity>
@@ -186,10 +196,10 @@ export class Productos extends Component {
                                         titleStyle={styles.listaProductos}
                                         descriptionStyle={styles.listaProductos}
                                         title={producto.nombre}
-                                    /*description={
-                                        "Cuit: " + pedido.cliente.cuil +
-                                        "\nEstado: " + pedido.estado
-                                    }*/
+                                        description={
+                                            "Marca: " + producto.marca +
+                                            "\nCodigo: " + producto.codigoBarras
+                                        }
                                     />
                                     <Divider />
                                 </View>
@@ -200,6 +210,13 @@ export class Productos extends Component {
                     rightOpenValue={-150}
                 />
 
+                <FAB
+                    style={styles.fab}
+                    small
+                    icon="add"
+                    color="white"
+                    onPress={this.nuevoProducto}
+                />
 
                 <Snackbar
                     visible={this.state.mostrarMensaje}
@@ -211,8 +228,6 @@ export class Productos extends Component {
                 >
                     {this.state.mensaje}
                 </Snackbar>
-
-                <NavigationEvents onDidBlur={() => this.setState({ crearPedido: false })} />
 
             </View>
         )
@@ -243,7 +258,7 @@ const styles = StyleSheet.create({
     rowFront: {
         backgroundColor: 'snow',
         justifyContent: 'center',
-        padding: 15
+
     },
     rowBack: {
         alignItems: 'center',
@@ -251,7 +266,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15
     },
     backRightBtn: {
         alignItems: 'center',
@@ -278,6 +292,11 @@ const styles = StyleSheet.create({
     },
     iconText: {
         color: 'white'
+    },
+    pickers: {
+        height: 50,
+        width: '90%',
+        marginBottom: 10
     }
 })
 

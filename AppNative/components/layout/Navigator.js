@@ -90,7 +90,7 @@ const ProductosStack = createStackNavigator({
 
 ProductosStack.navigationOptions = {
     tabBarLabel: "Productos",
-    tabBarIcon: ( <Icon name="md-cart" size={20} /> )
+    tabBarIcon: ( <Icon name="md-nutrition" size={20} /> )
 }
 
 const ClientesStack = createStackNavigator({
