@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { TextInput, Button, Snackbar } from 'react-native-paper'
 import 'prop-types';
 
@@ -7,17 +7,15 @@ export class CambiarPasswordSinLogin extends Component {
 
     state = {
         username: '',
+        currentPassword: '',
         newPassword: '',
         password: '',
         mensaje: '',
         mostrarMensaje: ''
     }
 
-    componentDidMount() {
-
-    }
-
     verificarPassword = () => {
+
         if (this.state.password == this.state.newPassword) {
             this.cambiarPassword();
         }
@@ -27,27 +25,39 @@ export class CambiarPasswordSinLogin extends Component {
     }
 
     cambiarPassword = () => {
-        const url = 'http://10.0.2.2:8080/tpo/cambio-password?nombre=' + this.state.username + '&password=' + this.state.password;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        const usuario = this.state.username
+        const password = this.state.currentPassword
+        const url = 'http://10.0.2.2:8080/tpo/login?user=' + usuario + '&password=' + password;
+        fetch(url)
+            .then((res) => res.json()).then((json) => {
+                if (json == true) {
+                    const url = 'http://10.0.2.2:8080/tpo/cambio-password?nombre=' + this.state.username + '&password=' + this.state.password;
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json()
+                                    .then(({ message }) => {
+                                        this.mostrarMensaje(message)
+                                    });
+                            }
+                            else {
+                                alert('Contraseña cambiada correctamente')
+                                this.props.navigation.navigate('Login')
+                            }
+                        })
+                }
+                else {
+                    this.mostrarMensaje('Verifique su usuario y/o contraseña.')
+                }
             }
-        })
-        .then(response => {
-            if(!response.ok)
-            {
-                return response.json()
-                .then(({message}) => {
-                    this.mostrarMensaje(message)
-                });
-            }
-            else {
-                alert('Contraseña cambiada correctamente')
-                this.props.navigation.navigate('Login')
-            }
-        })
+            );
     }
+
 
 
     mostrarMensaje = (mensaje) => {
@@ -59,11 +69,12 @@ export class CambiarPasswordSinLogin extends Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
 
                 <Text> Cambiar Contraseña </Text>
 
                 <TextInput
+                    style={styles.input}
                     label='Usuario'
                     value={this.state.username}
                     onChangeText={username => this.setState({ username })}
@@ -71,7 +82,19 @@ export class CambiarPasswordSinLogin extends Component {
                 />
 
                 <TextInput
-                    label='Ingrese nueva contraseña'
+                    style={styles.input}
+                    label='Ingrese su contraseña actual'
+                    value={this.state.currentPassword}
+                    onChangeText={currentPassword => this.setState({ currentPassword })}
+                    keyboardType='default'
+                    textContentType='password'
+                    secureTextEntry={true}
+                />
+
+
+                <TextInput
+                    style={styles.input}
+                    label='Ingrese su nueva contraseña'
                     value={this.state.newPassword}
                     onChangeText={newPassword => this.setState({ newPassword })}
                     keyboardType='default'
@@ -80,6 +103,7 @@ export class CambiarPasswordSinLogin extends Component {
                 />
 
                 <TextInput
+                    style={styles.input}
                     label='Ingrese nuevamente la contraseña'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
@@ -88,8 +112,17 @@ export class CambiarPasswordSinLogin extends Component {
                     secureTextEntry={true}
                 />
 
-                <Button onPress={this.verificarPassword} icon="add-circle-outline" mode="contained" >
-                    Cambiar Contraseña
+                <Button
+                    style={styles.buttons}
+                    onPress={this.verificarPassword}
+                    mode="contained" >
+                    Cambiar Pass
+                </Button>
+                <Button
+                    style={styles.buttons}
+                    onPress={() => this.props.navigation.navigate('Login')}
+                    mode="contained" >
+                    Volver
                 </Button>
                 <Snackbar
                     visible={this.state.mostrarMensaje}
@@ -105,5 +138,24 @@ export class CambiarPasswordSinLogin extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    input: {
+        width: '90%',
+        height: 50,
+        marginBottom: 10,
+    },
+    buttons: {
+        width: '45%',
+        height: 50,
+        padding: 10,
+        marginBottom: 10,
+    },
+})
 
 export default CambiarPasswordSinLogin

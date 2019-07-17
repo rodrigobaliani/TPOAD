@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
-import { NavigationEvents } from "react-navigation";
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, StyleSheet, Text } from 'react-native'
+import { TextInput, Snackbar, Button } from 'react-native-paper'
 import 'prop-types';
 
 export class CambiarPassword extends Component {
@@ -69,12 +66,13 @@ export class CambiarPassword extends Component {
 
     render() {
         return (
-            <View>
-                <Text> USUARIO  {this.state.username}</Text>
+            <View style = {styles.container}>
+                <Text> Usuario: {this.state.username}</Text>
 
                 <Text> Cambiar Contraseña </Text>
 
                 <TextInput
+                    style = {styles.input}
                     label='Ingrese nueva contraseña'
                     value={this.state.newPassword}
                     onChangeText={newPassword => this.setState({ newPassword })}
@@ -84,6 +82,7 @@ export class CambiarPassword extends Component {
                 />
 
                 <TextInput
+                    style = {styles.input}
                     label='Ingrese nuevamente la contraseña'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
@@ -92,7 +91,10 @@ export class CambiarPassword extends Component {
                     secureTextEntry={true}
                 />
 
-                <Button onPress={this.verificarPassword} icon="add-circle-outline" mode="contained" >
+                <Button 
+                    style = {styles.buttons}
+                    onPress={this.verificarPassword} 
+                    mode="contained" >
                     Cambiar Contraseña
                 </Button>
                 <Snackbar
@@ -109,5 +111,24 @@ export class CambiarPassword extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    input: {
+        width: '90%',
+        height: 50,
+        marginBottom: 10,
+    },
+    buttons: {
+        width: '45%',
+        height: 50,
+        padding: 10,
+        marginBottom: 10,
+    },
+})
 
 export default CambiarPassword

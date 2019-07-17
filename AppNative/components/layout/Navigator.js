@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, Text } from 'react-native'
-import { createSwitchNavigator, createAppContainer, createDrawerNavigator, createStackNavigator } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer, createStackNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -15,6 +14,7 @@ import AgregarItem from '../AgregarItem'
 import Usuario from '../Usuario'
 import CambiarPassword from '../CambiarPassword'
 import CambiarPasswordSinLogin from '../CambiarPasswordSinLogin'
+import VerificarUsuario from '../VerificarUsuario'
 
 const PedidosStack = createStackNavigator({
     Pedidos: {
@@ -115,7 +115,17 @@ const UsuarioStack = createStackNavigator({
     Usuario: {
         screen: Usuario,
         navigationOptions: {
-            headerTitle: 'Configuración del Usuario',
+            headerTitle: 'Usuario',
+            headerTitleStyle: {
+                textAlign: "center",
+                flex: 1
+            }
+        }
+    },
+    VerificarUsuario: {
+        screen: VerificarUsuario,
+        navigationOptions: {
+            headerTitle: 'Cambio de Password',
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1

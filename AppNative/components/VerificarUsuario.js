@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Button, TextInput, Snackbar } from 'react-native-paper'
+import { TextInput, Snackbar, Button } from 'react-native-paper'
+import 'prop-types';
 
-export class Login extends Component {
+export class VerificarUsuario extends Component {
+
     state = {
         username: '',
         password: '',
-        cambioPass: false,
         mensaje: '',
         mostrarMensaje: ''
     }
@@ -19,8 +20,7 @@ export class Login extends Component {
             .then((res) => res.json()).then((json) => {
                 if (json == true) {
                     this.handleSuccessfulLogin();
-                }
-                else {
+                } else {
                     this.mostrarMensaje(json.message)
                 }
             }
@@ -28,8 +28,7 @@ export class Login extends Component {
     }
 
     handleSuccessfulLogin = () => {
-        this.mostrarMensaje("Bienvenido " + this.state.username)
-        this.props.navigation.navigate('App', { username: this.state.username })
+        this.props.navigation.navigate('CambiarPassword', { username: this.state.username, password: this.state.password })
     }
 
     mostrarMensaje = (mensaje) => {
@@ -43,7 +42,7 @@ export class Login extends Component {
         return (
             <View style={styles.container}>
                 <TextInput
-                    style={styles.input}
+                    style={styles.input}    
                     label='Usuario'
                     value={this.state.username}
                     onChangeText={username => this.setState({ username })}
@@ -58,22 +57,13 @@ export class Login extends Component {
                     textContentType='password'
                     secureTextEntry={true}
                 />
-                <View style={{ flexDirection: 'row' }}>
-                    <Button
-                        style={styles.buttons}
-                        mode="contained"
-                        onPress={() => this.autenticar()}
-                    >
-                        Ingresar
-                    </Button>
-                    <Button
-                        style={styles.buttons}
-                        mode="contained"
-                        onPress={() => this.props.navigation.navigate('CambiarPasswordSinLogin')}
-                    >
-                        Cambiar Pass
-                    </Button>
-                </View>
+                <Button
+                    style={styles.buttons}
+                    mode="contained"
+                    title="Cambiar Contraseña"
+                    onPress={() => this.autenticar()}>
+                    Acceder
+                </Button>
                 <Snackbar
                     visible={this.state.mostrarMensaje}
                     onDismiss={() => { this.setState({ mostrarMensaje: false }) }}
@@ -108,4 +98,6 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Login
+
+
+export default VerificarUsuario
