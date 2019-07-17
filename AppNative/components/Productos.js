@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import 'prop-types';
 
 export class Productos extends Component {
-    
+
     state = {
         listViewData: Array(20).fill('').map((_, i) => `item #${i}`),
         productos: [],
@@ -31,10 +31,14 @@ export class Productos extends Component {
         this.cargarRubros();
         this.cargarSubRubros();
         this._subscribe = this.props.navigation.addListener('didFocus', () => {
-            this.cargarProductos();
+            //this.cargarRubros()
+            //this.cargarSubRubros()
+            //this.handleRubroSelect('Aderezos')
+           // this.handleSubrubroSelect('Mayonesa')
+           // this.cargarProductos('Mayonesa');
         });
     }
-    
+
     mostrarMensaje = (mensaje) => {
         this.setState({
             mensaje: mensaje,
@@ -65,31 +69,21 @@ export class Productos extends Component {
             });
     }
 
-    cargarProductos = () => {
-            fetch('http://10.0.2.2:8080/tpo/productos/')
-                .then((res) => res.json()).then((json) => {
-                this.setState({
-                    productos: json
-                });
-            }).catch((error) => {
-                alert("Error en API: Metodo getProductos" + error);
-            })
-    }
-    
     eliminarProducto = (productoAux) => {
         //alert(productoAux.subRubro.descripcion);
         const url = 'http://10.0.2.2:8080/tpo/productos/';
-        fetch(url, 
-        {
-        method: 'DELETE',
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},  
-        body: (JSON.stringify(productoAux))})
+        fetch(url,
+            {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: (JSON.stringify(productoAux))
+            })
             .then((res) => {
                 if (res.ok) {
                     alert('Producto eliminado correctamente.')
                     this.cargarProductos();
                 }
-                else{
+                else {
                     alert('El producto no se pudo eliminar')
                 }
             });
@@ -111,17 +105,28 @@ export class Productos extends Component {
 
     handleSubrubroSelect = (subrubro) => {
         this.setState({ subrubroSeleccionado: subrubro })
-        this.setState({ subrubro: subrubro })
-        this.setState({ productosLista: this.state.productos.filter((producto) => subrubro == producto.subRubro.descripcion) })
+        this.cargarProductos(subrubro)
     }
-    
+
+    cargarProductos = (subrubro) => {
+        let subrubroaux = this.state.subrubros.filter((sr) => subrubro == sr.descripcion)
+        fetch('http://10.0.2.2:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubroaux[0].codigo)
+            .then((res) => res.json()).then((json) => {
+                this.setState({
+                    productosLista: json
+                });
+            }).catch((error) => {
+                alert("Error en API" + error);
+            })
+    }
+
     render() {
         return (
             <View>
                 <Button icon="add-circle-outline" mode="contained" onPress={this.nuevoProducto}>
-                        Alta Producto
+                    Alta Producto
                 </Button>
-                 <Picker
+                <Picker
                     selectedValue={this.state.rubroSeleccionado}
                     style={styles.pickers}
                     onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
@@ -165,7 +170,7 @@ export class Productos extends Component {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.backRightBtn, styles.backRightBtnRight]}
-                                    onPress={this.eliminarProducto.bind(this,producto)}
+                                    onPress={this.eliminarProducto.bind(this, producto)}
                                 >
                                     <View style={styles.icons}>
                                         <Icon
@@ -181,10 +186,10 @@ export class Productos extends Component {
                                         titleStyle={styles.listaProductos}
                                         descriptionStyle={styles.listaProductos}
                                         title={producto.nombre}
-                                        /*description={
-                                            "Cuit: " + pedido.cliente.cuil +
-                                            "\nEstado: " + pedido.estado
-                                        }*/
+                                    /*description={
+                                        "Cuit: " + pedido.cliente.cuil +
+                                        "\nEstado: " + pedido.estado
+                                    }*/
                                     />
                                     <Divider />
                                 </View>
@@ -194,8 +199,8 @@ export class Productos extends Component {
                     leftOpenValue={75}
                     rightOpenValue={-150}
                 />
-                    
-                
+
+
                 <Snackbar
                     visible={this.state.mostrarMensaje}
                     onDismiss={() => { this.setState({ mostrarMensaje: false }) }}
@@ -208,7 +213,7 @@ export class Productos extends Component {
                 </Snackbar>
 
                 <NavigationEvents onDidBlur={() => this.setState({ crearPedido: false })} />
-                
+
             </View>
         )
     }
