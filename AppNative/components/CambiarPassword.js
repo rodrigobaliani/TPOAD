@@ -67,10 +67,6 @@ export class CambiarPassword extends Component {
     render() {
         return (
             <View style = {styles.container}>
-                <Text> Usuario: {this.state.username}</Text>
-
-                <Text> Cambiar Contraseña </Text>
-
                 <TextInput
                     style = {styles.input}
                     label='Ingrese nueva contraseña'

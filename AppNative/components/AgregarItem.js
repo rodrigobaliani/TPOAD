@@ -18,9 +18,7 @@ export class AgregarItem extends Component {
         productoSeleccionado: '',
         cantidad: '',
         mensaje: '',
-        cargandoRubros: true,
         cargandoSubrubros: true,
-        cargandoProductos: true,
         agregandoItem: false
 
     }
@@ -39,7 +37,7 @@ export class AgregarItem extends Component {
                 }).catch((error) => {
                     alert("Error en API" + error);
                 })
-        , 'rubros')
+            , 'rubros')
         fetch('http://10.0.2.2:8080/tpo/sub-rubros/')
             .then((res) => res.json()).then((json) => {
                 this.setState({
@@ -69,7 +67,7 @@ export class AgregarItem extends Component {
 
     handleSubrubroSelect = (subrubro) => {
         this.setState({ subrubroSeleccionado: subrubro })
-        let subrubroaux = this.state.subrubros.filter( (sr) => subrubro == sr.descripcion)
+        let subrubroaux = this.state.subrubros.filter((sr) => subrubro == sr.descripcion)
         trackPromise(fetch('http://10.0.2.2:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubroaux[0].codigo)
             .then((res) => res.json()).then((json) => {
                 this.setState({
@@ -78,7 +76,7 @@ export class AgregarItem extends Component {
             }).catch((error) => {
                 alert("Error en API" + error);
             })
-        , 'productos')
+            , 'productos')
     }
 
     handleProductoSelect = (producto) => {
@@ -136,7 +134,7 @@ export class AgregarItem extends Component {
                             />
                         )}
                     </Picker>
-                    <SmallLoading area = 'rubros'/>
+                    <SmallLoading area='rubros' value = {false} />
                 </View>
                 <View style={styles.rowLine}>
                     <Picker
@@ -151,7 +149,14 @@ export class AgregarItem extends Component {
                             />
                         )}
                     </Picker>
-                    <ActivityIndicator animating={this.state.cargandoSubrubros} size='small' color='royalblue' />
+                    { this.state.cargandoSubrubros === true ?
+                        <ActivityIndicator 
+                            animating={this.state.cargandoSubrubros} 
+                            size='small' 
+                            color='royalblue' 
+                        />
+                    :   null  
+                    }
                 </View>
                 <View style={styles.rowLine}>
                     <Picker
@@ -166,20 +171,23 @@ export class AgregarItem extends Component {
                             />
                         )}
                     </Picker>
-                    <SmallLoading area = 'productos'/>
+                    <SmallLoading 
+                        area='productos' 
+                        value = {false} 
+                    />
                 </View>
                 <TextInput
                     label='Cantidad'
                     value={this.state.cantidad}
                     onChangeText={cantidad => this.setState({ cantidad })}
                     keyboardType='number-pad'
-                    style = {styles.cantInput}
+                    style={styles.cantInput}
                 />
                 <Button
                     mode="contained"
                     loading={this.state.agregandoItem}
                     onPress={this.agregarItem}
-                    style = {styles.addButton}
+                    style={styles.addButton}
                 >Agregar Item
                 </Button>
                 <Snackbar
@@ -200,28 +208,28 @@ export class AgregarItem extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        display: 'flex',
-        paddingTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     pickers: {
-        height: 50,
-        width: '80%',
-        marginBottom: 10
+        height: 40,
+        width: '90%',
+        padding: 10,
+        marginBottom: 5
     },
     rowLine: {
         alignItems: 'center',
         flexDirection: 'row',
-        
+
     },
     addButton: {
-        marginTop: 10,
-        width: '80%',
-        marginLeft: 5
+        padding: 10,
+        width: '90%',
     },
     cantInput: {
-        marginTop: 10,
-        width: '50%',
-        marginLeft: 5
+        width: '90%',
+        height: 50,
+        marginBottom: 5
     }
 })
 
