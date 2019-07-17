@@ -4,7 +4,7 @@ import { List, Divider, Snackbar } from 'react-native-paper'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loading from './Loading'
-import {trackPromise} from "react-promise-tracker";
+import {trackPromise} from "react-promise-tracker"
 
 export class Clientes extends Component {
 
@@ -26,14 +26,17 @@ export class Clientes extends Component {
     }
 
     cargarClientes = () => {
-        fetch('http://10.0.2.2:8080/tpo/clientes')
+        trackPromise(
+            fetch('http://10.0.2.2:8080/tpo/clientes')
             .then((response) => response.json()).then((json) => {
             this.setState({
                 clientes: json
-            });
-        }).catch((error) => {
-            alert("Error al cargar clientes" + error);
-        })
+                });
+            })
+            .catch((error) => {
+                alert("Error al cargar clientes" + error);
+            })
+        )
     }
 
     goToPedidosCliente(cuit) {
