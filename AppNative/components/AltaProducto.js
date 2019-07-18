@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button, ActivityIndicator } from 'react-native-paper'
-import { NavigationEvents } from "react-navigation";
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, StyleSheet, Picker } from 'react-native'
+import { TextInput, Button, ActivityIndicator } from 'react-native-paper'
 import { trackPromise } from "react-promise-tracker";
 import SmallLoading from './SmallLoading'
 import 'prop-types';

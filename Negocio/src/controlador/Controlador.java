@@ -89,6 +89,7 @@ public class Controlador {
 	/*Probado*/
 	public void modificaProducto(ProductoView recibido) throws ProductoException{
 		Producto producto = ProductoDAO.getInstancia().findProductoByIdentificador(recibido.getIdentificador());
+		producto.setPrecio(recibido.getPrecio());
 		producto.update();
 	}
 	/*Probado*/
