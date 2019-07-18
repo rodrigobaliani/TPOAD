@@ -69,6 +69,30 @@ class Productos extends Component {
         );
     }
 
+    cargarProductosPorRubro = (rubro) => {
+        trackPromise(fetch('http://localhost:8080/tpo/productos/rubro?codigoRubro=' + rubro)
+            .then((res) => res.json()).then((json) => {
+                this.setState({
+                    productosLista: json
+                });
+            }).catch((error) => {
+                alert("Error en API" + error);
+            })
+        );
+    }
+
+    cargarProductosPorSubrubro = (subrubro) => {
+        trackPromise(fetch('http://localhost:8080/tpo/productos/subrubro?codigoSubRubro=' + subrubro)
+            .then((res) => res.json()).then((json) => {
+                this.setState({
+                    productosLista: json
+                });
+            }).catch((error) => {
+                alert("Error en API" + error);
+            })
+            , 'productos')
+    }
+
     eliminarProducto = (productoAux) => {
         const url = 'http://localhost:8080/tpo/productos/';
         /*console.log(productoAux.identificador)
@@ -104,14 +128,15 @@ class Productos extends Component {
             }),
             subRubroSelectedOption: null
         });
+        this.cargarProductosPorRubro(codigoRubro)
     }
 
     handleSelectSubRubroOnChange = (selectedOption) => {
         let codigoSubRubro = selectedOption.value;
         this.setState({
-            subRubroSelectedOption: selectedOption,
-            productosLista: this.state.productosSource.filter((producto) => codigoSubRubro == producto.subRubro.codigo)
+            subRubroSelectedOption: selectedOption
         });
+        this.cargarProductosPorSubrubro(codigoSubRubro)
     }
 
     render() {
