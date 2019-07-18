@@ -18,6 +18,7 @@ export class AgregarItem extends Component {
         productoSeleccionado: '',
         cantidad: '',
         mensaje: '',
+        mostrarMensaje: false,
         cargandoSubrubros: true,
         agregandoItem: false
 
@@ -185,9 +186,9 @@ export class AgregarItem extends Component {
                 />
                 <Button
                     mode="contained"
+                    icon="add-circle-outline" 
                     loading={this.state.agregandoItem}
                     onPress={this.agregarItem}
-                    style={styles.addButton}
                 >Agregar Item
                 </Button>
                 <Snackbar
@@ -221,10 +222,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
 
-    },
-    addButton: {
-        padding: 10,
-        width: '90%',
     },
     cantInput: {
         width: '90%',

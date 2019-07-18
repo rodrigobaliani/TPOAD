@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker} from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
+import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
+import { List, Divider, FAB, TextInput, Snackbar, Button, ActivityIndicator } from 'react-native-paper'
 import { NavigationEvents } from "react-navigation";
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { trackPromise } from "react-promise-tracker";
+import SmallLoading from './SmallLoading'
 import 'prop-types';
 
 export class AltaProducto extends Component {
-    
+
     state = {
         rubro: '',
         subrubro: '',
@@ -20,20 +22,23 @@ export class AltaProducto extends Component {
         subrubros: [],
         rubroSeleccionado: '',
         subrubroSeleccionado: '',
-        subrubrosLista: []
+        subrubrosLista: [],
+        cargandoSubrubros: true
     }
 
     componentDidMount() {
-        this._subscribe = this.props.navigation.addListener('didFocus', () => {});
-        fetch('http://10.0.2.2:8080/tpo/rubros')
-            .then((res) => res.json()).then((json) => {
-                this.setState({
-                    rubros: json
-                });
+        this._subscribe = this.props.navigation.addListener('didFocus', () => { });
+        trackPromise(
+            fetch('http://10.0.2.2:8080/tpo/rubros')
+                .then((res) => res.json()).then((json) => {
+                    this.setState({
+                        rubros: json
+                    });
 
-            }).catch((error) => {
-                alert("Error en API. Metodo getRubros" + error);
-            });
+                }).catch((error) => {
+                    alert("Error en API. Metodo getRubros" + error);
+                })
+            , 'rubros')
         fetch('http://10.0.2.2:8080/tpo/sub-rubros/')
             .then((res) => res.json()).then((json) => {
                 this.setState({
@@ -47,6 +52,7 @@ export class AltaProducto extends Component {
     handleRubroSelect = (rubro) => {
         this.setState({ rubroSeleccionado: rubro })
         this.setState({ subrubrosLista: this.state.subrubros.filter((subrubro) => rubro == subrubro.rubro.descripcion) })
+        this.setState({ cargandoSubrubros: false })
     }
 
     handleSubrubroSelect = (subrubro) => {
@@ -54,7 +60,7 @@ export class AltaProducto extends Component {
         this.setState({ subrubro: subrubro })
     }
 
-   
+
 
     nuevoProducto = () => {
         const producto = this.generarProducto();
@@ -71,16 +77,15 @@ export class AltaProducto extends Component {
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(producto),
-            headers:{
-              'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         })
-        .then(res => {
-            if(res.ok)
-            {
-                alert('Producto creado correctamente')
-            }  
-          });
+            .then(res => {
+                if (res.ok) {
+                    alert('Producto creado correctamente')
+                }
+            });
     }
 
     generarProducto = () => {
@@ -95,7 +100,7 @@ export class AltaProducto extends Component {
             codigoBarras: String(this.state.codigoBarras),
             precio: parseFloat(this.state.precio)
         }
-        
+
         return producto;
     }
 
@@ -109,64 +114,85 @@ export class AltaProducto extends Component {
     encontrarRubro = (descripcion) => {
         auxiliar = this.state.rubros.filter((rubro) => descripcion == rubro.descripcion);
         respuesta = auxiliar[0];
-        
+
         return respuesta;
     }
 
-    
+
     render() {
         return (
-            <View  style={styles.container}>
-                 <Picker
-                    selectedValue={this.state.rubroSeleccionado}
-                    style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
-                >
-                    {this.state.rubros.map((rubro) =>
-                        <Picker.Item
-                            label={rubro.descripcion}
-                            value={rubro.descripcion}
+            <View style={styles.container}>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <Picker
+                        selectedValue={this.state.rubroSeleccionado}
+                        style={styles.pickers}
+                        onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
+                    >
+                        {this.state.rubros.map((rubro) =>
+                            <Picker.Item
+                                label={rubro.descripcion}
+                                value={rubro.descripcion}
+                            />
+                        )}
+                    </Picker>
+                    <SmallLoading area='rubros' />
+                </View>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <Picker
+                        selectedValue={this.state.subrubroSeleccionado}
+                        style={styles.pickers}
+                        onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
+                    >
+                        {this.state.subrubrosLista.map((subrubro) =>
+                            <Picker.Item
+                                label={subrubro.descripcion}
+                                value={subrubro.descripcion}
+                            />
+                        )}
+                    </Picker>
+                    {this.state.cargandoSubrubros === true ?
+                        <ActivityIndicator
+                            animating={this.state.cargandoSubrubros}
+                            size='small'
+                            color='royalblue'
                         />
-                    )}
-                </Picker>
-                <Picker
-                    selectedValue={this.state.subrubroSeleccionado}
-                    style={styles.pickers}
-                    onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
-                >
-                    {this.state.subrubrosLista.map((subrubro) =>
-                        <Picker.Item
-                            label={subrubro.descripcion}
-                            value={subrubro.descripcion}
-                        />
-                    )}
-                </Picker>
+                    : null
+                    }
+                </View>
                 <TextInput
+                    style={styles.inputs}
                     label='Nombre'
                     value={this.state.nombre}
                     onChangeText={nombre => this.setState({ nombre })}
                     keyboardType='default'
                 />
                 <TextInput
+                    style={styles.inputs}
                     label='Marca'
                     value={this.state.marca}
                     onChangeText={marca => this.setState({ marca })}
                     keyboardType='default'
                 />
                 <TextInput
+                    style={styles.inputs}
                     label='Codigo de Barras'
                     value={this.state.codigoBarras}
                     onChangeText={codigoBarras => this.setState({ codigoBarras })}
                     keyboardType='number-pad'
                 />
                 <TextInput
+                    style={styles.inputs}
                     label='Precio'
                     value={this.state.precio}
                     onChangeText={precio => this.setState({ precio })}
                     keyboardType='number-pad'
                 />
-                 <Button icon="add-circle-outline" mode="contained" onPress={this.nuevoProducto}>
-                        Crear Nuevo Producto
+                <Button 
+                    icon="add-circle-outline" 
+                    mode="contained" 
+                    onPress={this.nuevoProducto}
+                >
+                    Crear Nuevo Producto
                 </Button>
             </View>
         )
@@ -176,11 +202,17 @@ export class AltaProducto extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     pickers: {
         height: 50,
-        width: '80%',
+        width: '90%',
+    },
+    inputs: {
+        width: '90%',
+        height: 50,
+        marginBottom: 5
     }
 })
 

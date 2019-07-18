@@ -123,43 +123,52 @@ export class Productos extends Component {
             }).catch((error) => {
                 alert("Error en API" + error);
             })
-        , 'productos')
+            , 'productos')
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                    <Picker
-                        selectedValue={this.state.rubroSeleccionado}
-                        style={styles.pickers}
-                        onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
-                    >
-                        {this.state.rubros.map((rubro) =>
-                            <Picker.Item
-                                label={rubro.descripcion}
-                                value={rubro.descripcion}
+                <View style={{ alignItems: 'center' }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                        <Picker
+                            selectedValue={this.state.rubroSeleccionado}
+                            style={styles.pickers}
+                            onValueChange={(itemValue) => this.handleRubroSelect(itemValue)}
+                        >
+                            {this.state.rubros.map((rubro) =>
+                                <Picker.Item
+                                    label={rubro.descripcion}
+                                    value={rubro.descripcion}
+                                />
+                            )}
+                        </Picker>
+                        <SmallLoading area='rubros' />
+                    </View>
+                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                        <Picker
+                            selectedValue={this.state.subrubroSeleccionado}
+                            style={styles.pickers}
+                            onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
+                        >
+                            {this.state.subrubrosLista.map((subrubro) =>
+                                <Picker.Item
+                                    label={subrubro.descripcion}
+                                    value={subrubro.descripcion}
+                                />
+                            )}
+                        </Picker>
+                        {this.state.cargandoSubrubros === true ?
+                            <ActivityIndicator 
+                                animating={this.state.cargandoSubrubros} 
+                                size='small' 
+                                color='royalblue'
                             />
-                        )}
-                    </Picker>
-                    <SmallLoading area='rubros' />
+                        : null
+                        }
+                    </View>
                 </View>
-                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                    <Picker
-                        selectedValue={this.state.subrubroSeleccionado}
-                        style={styles.pickers}
-                        onValueChange={(itemValue) => this.handleSubrubroSelect(itemValue)}
-                    >
-                        {this.state.subrubrosLista.map((subrubro) =>
-                            <Picker.Item
-                                label={subrubro.descripcion}
-                                value={subrubro.descripcion}
-                            />
-                        )}
-                    </Picker>
-                    <ActivityIndicator animating={this.state.cargandoSubrubros} size='small' color='royalblue' />
-                </View>
-                <Loading area = 'productos' />
+                <Loading area='productos' />
                 <SwipeListView
                     dataSource={this.state.ds.cloneWithRows(this.state.productosLista)}
                     renderRow={(producto, rowId) => (

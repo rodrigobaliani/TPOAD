@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button } from 'react-native-paper'
+import { List, Divider, FAB, TextInput, Snackbar, Button, ActivityIndicator } from 'react-native-paper'
 import { NavigationEvents } from "react-navigation";
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,7 +19,10 @@ export class Producto extends Component {
         producto: '',
         rubros: [],
         subrubros: [],
-        subrubrosLista: []
+        mensaje: '',
+        mostrarMensaje: false,
+        subrubrosLista: [],
+        cargandoProducto: true
     }
 
     componentDidMount() {
@@ -64,53 +67,64 @@ export class Producto extends Component {
                 this.setState({ nombre: responseData.nombre })
                 this.setState({ codigoBarras: responseData.codigoBarras })
                 this.setState({ marca: responseData.marca })
-                this.setState({ precio: parseFloat(responseData.precio)})
+                this.setState({ precio: String(responseData.precio) })
                 this.setState({ identificador: responseData.identificador })
                 this.setState({ producto: this.generarProducto() })
             });
+        this.setState({ cargandoProducto: false })
     }
 
     generarProducto = () => {
         const productoAux = {
             identificador: this.state.identificador,
             subRubro: this.state.subrubro,
-            rubro: this.state.rubro, 
+            rubro: this.state.rubro,
             nombre: String(this.state.nombre),
             marca: String(this.state.marca),
             codigoBarras: String(this.state.codigoBarras),
             precio: parseFloat(this.state.precio)
         }
         return productoAux;
-        }
+    }
 
     modificarProducto = () => {
         const url = 'http://10.0.2.2:8080/tpo/productos/modificar';
         fetch(url, {
             method: 'PUT',
             body: JSON.stringify(this.state.producto),
-            headers:{
-              'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         })
-        .then(res => {
-            if(res.ok)
-            {
-                alert('Producto modificado correctamente')
-            }
-            else
-            {
-                alert("NO SE PUDO MOFICIAR EL PRODUCTO")
-            }  
-          });   
+            .then(res => {
+                if (res.ok) {
+                    this.mostrarMensaje('Producto modificado correctamente')
+                }
+                else {
+                    this.mostrarMensaje("No se pudo modificar el producto.")
+                }
+            });
+    }
+
+    mostrarMensaje = (mensaje) => {
+        this.setState({
+            mensaje: mensaje,
+            mostrarMensaje: true
+        })
     }
 
     render() {
         return (
             <View style={styles.container}>
+                <ActivityIndicator
+                    animating={this.state.cargandoProducto}
+                    size='large'
+                    color='royalblue'
+                />
                 <Picker
                     selectedValue={this.state.rubro.descripcion}
                     style={styles.pickers}
-                    enabled = {false}
+                    enabled={false}
                 >
                     {this.state.rubros.map((rubro) =>
                         <Picker.Item
@@ -122,7 +136,7 @@ export class Producto extends Component {
                 <Picker
                     selectedValue={this.state.subrubro.descripcion}
                     style={styles.pickers}
-                    enabled = {false}
+                    enabled={false}
                 >
                     {this.state.subrubros.map((subrubro) =>
                         <Picker.Item
@@ -132,6 +146,7 @@ export class Producto extends Component {
                     )}
                 </Picker>
                 <TextInput
+                    style = {styles.inputs}
                     label='Nombre'
                     value={this.state.nombre}
                     onChangeText={nombre => this.setState({ nombre })}
@@ -139,6 +154,7 @@ export class Producto extends Component {
                     disabled={true}
                 />
                 <TextInput
+                    style = {styles.inputs}
                     label='Marca'
                     value={this.state.marca}
                     onChangeText={marca => this.setState({ marca })}
@@ -146,6 +162,7 @@ export class Producto extends Component {
                     disabled={true}
                 />
                 <TextInput
+                    style = {styles.inputs}
                     label='Codigo de Barras'
                     value={this.state.codigoBarras}
                     onChangeText={codigoBarras => this.setState({ codigoBarras })}
@@ -153,29 +170,51 @@ export class Producto extends Component {
                     disabled={true}
                 />
                 <TextInput
+                    style = {styles.inputs}
                     label='Precio'
                     value={this.state.precio}
                     onChangeText={precio => this.setState({ precio })}
                     keyboardType='number-pad'
                 />
-                <Button icon="add-circle-outline" mode="contained" onPress={this.modificarProducto}>
+                <Button 
+                     mode="contained" 
+                     onPress={this.modificarProducto}
+                >
                     Modificar Producto
                 </Button>
+                <Snackbar
+                    visible={this.state.mostrarMensaje}
+                    onDismiss={() => { this.setState({ mostrarMensaje: false }) }}
+                    action={{
+                        label: 'OK',
+                        onPress: () => { this.setState({ mostrarMensaje: false }) }
+                    }}
+                >
+                    {this.state.mensaje}
+                </Snackbar>
             </View>
 
         )
     }
 }
-   
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     pickers: {
+        height: 40,
+        width: '90%',
+        padding: 10,
+        marginBottom: 5
+    },
+    inputs: {
+        width: '90%',
         height: 50,
-        width: '80%',
+        marginBottom: 5
     }
 })
 
