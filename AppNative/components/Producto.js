@@ -85,11 +85,11 @@ export class Producto extends Component {
     }
 
     modificarProducto = () => {
-        this.setState({ producto: this.generarProducto() })
+        const producto = this.generarProducto()
         const url = 'http://10.0.2.2:8080/tpo/productos/modificar';
         fetch(url, {
             method: 'PUT',
-            body: JSON.stringify(this.state.producto),
+            body: JSON.stringify(producto),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -117,7 +117,7 @@ export class Producto extends Component {
                 <ActivityIndicator
                     animating={this.state.cargandoProducto}
                     size='large'
-                    color='royalblue'
+                    color='#d32f2f'
                 />
                 <Picker
                     selectedValue={this.state.rubro.descripcion}
@@ -148,6 +148,8 @@ export class Producto extends Component {
                 <TextInput
                     style = {styles.inputs}
                     label='Nombre'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.nombre}
                     onChangeText={nombre => this.setState({ nombre })}
                     keyboardType='default'
@@ -156,6 +158,8 @@ export class Producto extends Component {
                 <TextInput
                     style = {styles.inputs}
                     label='Marca'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.marca}
                     onChangeText={marca => this.setState({ marca })}
                     keyboardType='default'
@@ -164,6 +168,8 @@ export class Producto extends Component {
                 <TextInput
                     style = {styles.inputs}
                     label='Codigo de Barras'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.codigoBarras}
                     onChangeText={codigoBarras => this.setState({ codigoBarras })}
                     keyboardType='number-pad'
@@ -172,12 +178,15 @@ export class Producto extends Component {
                 <TextInput
                     style = {styles.inputs}
                     label='Precio'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.precio}
                     onChangeText={precio => this.setState({ precio })}
                     keyboardType='number-pad'
                 />
                 <Button 
                      mode="contained" 
+                     color = '#d32f2f'
                      onPress={this.modificarProducto}
                 >
                     Modificar Producto

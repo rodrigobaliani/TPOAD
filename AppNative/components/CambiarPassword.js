@@ -70,6 +70,8 @@ export class CambiarPassword extends Component {
                 <TextInput
                     style = {styles.input}
                     label='Ingrese nueva contraseña'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.newPassword}
                     onChangeText={newPassword => this.setState({ newPassword })}
                     keyboardType='default'
@@ -80,6 +82,8 @@ export class CambiarPassword extends Component {
                 <TextInput
                     style = {styles.input}
                     label='Ingrese nuevamente la contraseña'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
                     keyboardType='default'
@@ -89,6 +93,7 @@ export class CambiarPassword extends Component {
 
                 <Button 
                     style = {styles.buttons}
+                    color = '#d32f2f'
                     onPress={this.verificarPassword} 
                     mode="contained" >
                     Cambiar Contraseña

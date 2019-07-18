@@ -11,6 +11,7 @@ export class Usuario extends Component {
                 <Button
                     style={styles.buttons}
                     mode="contained"
+                    color = '#d32f2f'
                     onPress={() => this.props.navigation.push('VerificarUsuario')}
                 >
                     Cambiar Pass
@@ -18,6 +19,7 @@ export class Usuario extends Component {
                 <Button
                     style={styles.buttons}
                     mode="contained"
+                    color = '#d32f2f'
                     onPress={() => this.props.navigation.navigate('Login')}
                 >
                     Cerrar Sesión

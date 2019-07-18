@@ -16,6 +16,9 @@ import CambiarPassword from '../CambiarPassword'
 import CambiarPasswordSinLogin from '../CambiarPasswordSinLogin'
 import VerificarUsuario from '../VerificarUsuario'
 
+const backgroundColor = '#d32f2f'
+const headerTextColor = '#ffffff'
+
 const PedidosStack = createStackNavigator({
     Pedidos: {
         screen: Pedidos,
@@ -24,7 +27,11 @@ const PedidosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
     },
     Pedido: { 
@@ -34,7 +41,12 @@ const PedidosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
+            
         }
      },
      AgregarItem: {
@@ -44,7 +56,11 @@ const PedidosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
      }
 })
@@ -62,7 +78,11 @@ const ProductosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
     },
     Producto: { 
@@ -72,7 +92,11 @@ const ProductosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
      },
      AltaProducto: { 
@@ -82,7 +106,11 @@ const ProductosStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
      }
      
@@ -101,7 +129,11 @@ const ClientesStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
     }
 })
@@ -119,7 +151,11 @@ const UsuarioStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
     },
     VerificarUsuario: {
@@ -129,7 +165,11 @@ const UsuarioStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
     },
     CambiarPassword: { 
@@ -139,7 +179,11 @@ const UsuarioStack = createStackNavigator({
             headerTitleStyle: {
                 textAlign: "center",
                 flex: 1
-            }
+            },
+            headerStyle: {
+                backgroundColor: backgroundColor,
+              },
+            headerTintColor: headerTextColor,
         }
      }
 })
@@ -159,7 +203,7 @@ const AppTabNavigator = createMaterialBottomTabNavigator(
         UsuarioStack
     },
     {
-        barStyle: { backgroundColor: 'royalblue' },
+        barStyle: { backgroundColor: backgroundColor },
         navigationOptions: ({ navigation }) => {
             const { routeName } = navigation.state.routes[navigation.state.index];
             return {

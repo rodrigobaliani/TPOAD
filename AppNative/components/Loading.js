@@ -9,7 +9,7 @@ const Loading = (props) => {
         <View>
             {
                 (promiseInProgress === true) ?
-                    <ActivityIndicator size = 'large' color = 'royalblue'/>
+                    <ActivityIndicator size = 'large' color = '#d32f2f'/>
                 : null
             }
         </View>

@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
-        backgroundColor: 'royalblue'
+        backgroundColor: '#d32f2f'
     },
     textInput: {
         position: 'absolute',
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     },
     rowBack: {
         alignItems: 'center',
-        backgroundColor: 'dodgerblue',
+        backgroundColor: '#d32f2f',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',

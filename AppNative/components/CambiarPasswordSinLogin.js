@@ -76,6 +76,8 @@ export class CambiarPasswordSinLogin extends Component {
                 <TextInput
                     style={styles.input}
                     label='Usuario'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.username}
                     onChangeText={username => this.setState({ username })}
                     keyboardType='default'
@@ -84,6 +86,8 @@ export class CambiarPasswordSinLogin extends Component {
                 <TextInput
                     style={styles.input}
                     label='Ingrese su contraseña actual'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.currentPassword}
                     onChangeText={currentPassword => this.setState({ currentPassword })}
                     keyboardType='default'
@@ -95,6 +99,8 @@ export class CambiarPasswordSinLogin extends Component {
                 <TextInput
                     style={styles.input}
                     label='Ingrese su nueva contraseña'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.newPassword}
                     onChangeText={newPassword => this.setState({ newPassword })}
                     keyboardType='default'
@@ -105,6 +111,8 @@ export class CambiarPasswordSinLogin extends Component {
                 <TextInput
                     style={styles.input}
                     label='Ingrese nuevamente la contraseña'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
                     keyboardType='default'
@@ -114,12 +122,14 @@ export class CambiarPasswordSinLogin extends Component {
 
                 <Button
                     style={styles.buttons}
+                    color = '#d32f2f'
                     onPress={this.verificarPassword}
                     mode="contained" >
                     Cambiar Pass
                 </Button>
                 <Button
                     style={styles.buttons}
+                    color = '#d32f2f'
                     onPress={() => this.props.navigation.navigate('Login')}
                     mode="contained" >
                     Volver

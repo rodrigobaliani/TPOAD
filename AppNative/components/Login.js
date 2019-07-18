@@ -45,6 +45,8 @@ export class Login extends Component {
                 <TextInput
                     style={styles.input}
                     label='Usuario'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.username}
                     onChangeText={username => this.setState({ username })}
                     keyboardType='default'
@@ -53,6 +55,8 @@ export class Login extends Component {
                 <TextInput
                     style={styles.input}
                     label='Password'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
                     textContentType='password'
@@ -62,6 +66,7 @@ export class Login extends Component {
                     <Button
                         style={styles.buttons}
                         mode="contained"
+                        color = '#d32f2f'
                         onPress={() => this.autenticar()}
                     >
                         Ingresar
@@ -69,6 +74,7 @@ export class Login extends Component {
                     <Button
                         style={styles.buttons}
                         mode="contained"
+                        color = '#d32f2f'
                         onPress={() => this.props.navigation.navigate('CambiarPasswordSinLogin')}
                     >
                         Cambiar Pass

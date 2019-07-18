@@ -154,7 +154,7 @@ export class AgregarItem extends Component {
                         <ActivityIndicator 
                             animating={this.state.cargandoSubrubros} 
                             size='small' 
-                            color='royalblue' 
+                            color='#d32f2f' 
                         />
                     :   null  
                     }
@@ -179,6 +179,8 @@ export class AgregarItem extends Component {
                 </View>
                 <TextInput
                     label='Cantidad'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.cantidad}
                     onChangeText={cantidad => this.setState({ cantidad })}
                     keyboardType='number-pad'
@@ -187,6 +189,7 @@ export class AgregarItem extends Component {
                 <Button
                     mode="contained"
                     icon="add-circle-outline" 
+                    color = '#d32f2f'
                     loading={this.state.agregandoItem}
                     onPress={this.agregarItem}
                 >Agregar Item

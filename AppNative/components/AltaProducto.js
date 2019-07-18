@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Picker } from 'react-native'
-import { TextInput, Button, ActivityIndicator } from 'react-native-paper'
+import { TextInput, Button, ActivityIndicator, Snackbar } from 'react-native-paper'
 import { trackPromise } from "react-promise-tracker";
 import SmallLoading from './SmallLoading'
 import 'prop-types';
@@ -20,7 +20,9 @@ export class AltaProducto extends Component {
         rubroSeleccionado: '',
         subrubroSeleccionado: '',
         subrubrosLista: [],
-        cargandoSubrubros: true
+        cargandoSubrubros: true,
+        mensaje: '',
+        mostrarMensaje: false,
     }
 
     componentDidMount() {
@@ -115,6 +117,12 @@ export class AltaProducto extends Component {
         return respuesta;
     }
 
+    mostrarMensaje = (mensaje) => {
+        this.setState({
+            mensaje: mensaje,
+            mostrarMensaje: true
+        })
+    }
 
     render() {
         return (
@@ -153,7 +161,7 @@ export class AltaProducto extends Component {
                         <ActivityIndicator
                             animating={this.state.cargandoSubrubros}
                             size='small'
-                            color='royalblue'
+                            color='#d32f2f'
                         />
                     : null
                     }
@@ -161,6 +169,8 @@ export class AltaProducto extends Component {
                 <TextInput
                     style={styles.inputs}
                     label='Nombre'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.nombre}
                     onChangeText={nombre => this.setState({ nombre })}
                     keyboardType='default'
@@ -168,6 +178,8 @@ export class AltaProducto extends Component {
                 <TextInput
                     style={styles.inputs}
                     label='Marca'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.marca}
                     onChangeText={marca => this.setState({ marca })}
                     keyboardType='default'
@@ -175,6 +187,8 @@ export class AltaProducto extends Component {
                 <TextInput
                     style={styles.inputs}
                     label='Codigo de Barras'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.codigoBarras}
                     onChangeText={codigoBarras => this.setState({ codigoBarras })}
                     keyboardType='number-pad'
@@ -182,6 +196,8 @@ export class AltaProducto extends Component {
                 <TextInput
                     style={styles.inputs}
                     label='Precio'
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     value={this.state.precio}
                     onChangeText={precio => this.setState({ precio })}
                     keyboardType='number-pad'
@@ -189,10 +205,21 @@ export class AltaProducto extends Component {
                 <Button 
                     icon="add-circle-outline" 
                     mode="contained" 
+                    color = '#d32f2f' 
                     onPress={this.nuevoProducto}
                 >
                     Crear Nuevo Producto
                 </Button>
+                <Snackbar
+                    visible={this.state.mostrarMensaje}
+                    onDismiss={() => { this.setState({ mostrarMensaje: false }) }}
+                    action={{
+                        label: 'OK',
+                        onPress: () => { this.setState({ mostrarMensaje: false }) }
+                    }}
+                >
+                    {this.state.mensaje}
+                </Snackbar>
             </View>
         )
     }

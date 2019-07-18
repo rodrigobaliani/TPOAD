@@ -45,6 +45,8 @@ export class VerificarUsuario extends Component {
                     style={styles.input}    
                     label='Usuario'
                     value={this.state.username}
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     onChangeText={username => this.setState({ username })}
                     keyboardType='default'
                 />
@@ -53,6 +55,8 @@ export class VerificarUsuario extends Component {
                     style={styles.input}
                     label='Password'
                     value={this.state.password}
+                    underlineColor = '#d32f2f'
+                    selectionColor = '#d32f2f'
                     onChangeText={password => this.setState({ password })}
                     textContentType='password'
                     secureTextEntry={true}
@@ -61,6 +65,7 @@ export class VerificarUsuario extends Component {
                     style={styles.buttons}
                     mode="contained"
                     title="Cambiar Contraseña"
+                    color = '#d32f2f'
                     onPress={() => this.autenticar()}>
                     Acceder
                 </Button>

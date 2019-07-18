@@ -9,7 +9,7 @@ const SmallLoading = (props) => {
         <View>
             {
                 (promiseInProgress === true) ?
-                    <ActivityIndicator size = 'small' color = 'royalblue'/>
+                    <ActivityIndicator size = 'small' color = '#d32f2f'/>
                 : null
             }
         </View>
