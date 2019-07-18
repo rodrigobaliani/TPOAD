@@ -9,6 +9,7 @@ import ModificarProducto from './components/ModificarProducto';
 import Clientes from './components/Clientes';
 import Login from './components/Login';
 import Pedido from './components/Pedido';
+import CambiarContraseña from './components/CambiarContraseña';
 
 
 class App extends Component {
@@ -52,6 +53,7 @@ class App extends Component {
                                 <Route exact path='/productos/modificar/:identificador' component={ModificarProducto}/>
                                 <Route exact path='/clientes' component={Clientes}/>
                                 <Route exact path='/login' render={() => <Login appLogin={this.handleChildLogin}/>}/>
+                                <Route exact path='/cambiar-contraseña/:usuario' component={CambiarContraseña}/>
                             </div>
                         </div>
                     </div>

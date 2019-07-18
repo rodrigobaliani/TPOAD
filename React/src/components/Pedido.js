@@ -65,7 +65,6 @@ export class Pedido extends Component {
         this.setState({ subrubro: e.target.value })
         const subrubro = e.target.value
         this.setState({ productosLista: this.state.productos.filter((producto) => subrubro == producto.subRubro.descripcion) })
-
     }
 
     handleSelectProductoChange = (e) => {
@@ -154,7 +153,7 @@ export class Pedido extends Component {
                             {this.state.subrubro !== '' ?
                                 <React.Fragment>
                                     <Form.Label>Producto</Form.Label>
-                                    <Form.Control as="select" onChange={this.handleSelectProductoChange}>
+                                    <Form.Control as="select" onChange={this.handleSelectProductoChange} value = {this.state.producto}>
                                         <React.Fragment>
                                             <option></option>
                                             {this.state.productosLista.map((producto) => (
