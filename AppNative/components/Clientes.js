@@ -64,6 +64,7 @@ export class Clientes extends Component {
             <View style={styles.container}>
                 <Loading/>
                 <SwipeListView
+                    enableEmptySections={true}
                     dataSource={this.state.ds.cloneWithRows(this.state.clientes)}
                     renderRow={(cliente, rowId) => (
                         <SwipeRow

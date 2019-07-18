@@ -130,6 +130,7 @@ export class AltaProducto extends Component {
                     >
                         {this.state.rubros.map((rubro) =>
                             <Picker.Item
+                                key={rubro.codigo}
                                 label={rubro.descripcion}
                                 value={rubro.descripcion}
                             />
@@ -145,6 +146,7 @@ export class AltaProducto extends Component {
                     >
                         {this.state.subrubrosLista.map((subrubro) =>
                             <Picker.Item
+                                key={subrubro.codigo}
                                 label={subrubro.descripcion}
                                 value={subrubro.descripcion}
                             />

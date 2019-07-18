@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, StyleSheet, ListView, TouchableHighlight, Text, Picker } from 'react-native'
-import { List, Divider, FAB, TextInput, Snackbar, Button, ActivityIndicator } from 'react-native-paper'
-import { NavigationEvents } from "react-navigation";
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, StyleSheet, Picker } from 'react-native'
+import { TextInput, Snackbar, Button, ActivityIndicator } from 'react-native-paper'
 import 'prop-types';
 
 
@@ -128,6 +125,7 @@ export class Producto extends Component {
                 >
                     {this.state.rubros.map((rubro) =>
                         <Picker.Item
+                            key={rubro.codigo}
                             label={rubro.descripcion}
                             value={rubro.descripcion}
                         />
@@ -140,6 +138,7 @@ export class Producto extends Component {
                 >
                     {this.state.subrubros.map((subrubro) =>
                         <Picker.Item
+                            key={subrubro.codigo}
                             label={subrubro.descripcion}
                             value={subrubro.descripcion}
                         />

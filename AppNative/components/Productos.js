@@ -138,6 +138,7 @@ export class Productos extends Component {
                         >
                             {this.state.rubros.map((rubro) =>
                                 <Picker.Item
+                                    key={rubro.codigo}
                                     label={rubro.descripcion}
                                     value={rubro.descripcion}
                                 />
@@ -153,6 +154,7 @@ export class Productos extends Component {
                         >
                             {this.state.subrubrosLista.map((subrubro) =>
                                 <Picker.Item
+                                    key={subrubro.codigo}
                                     label={subrubro.descripcion}
                                     value={subrubro.descripcion}
                                 />
@@ -170,6 +172,7 @@ export class Productos extends Component {
                 </View>
                 <Loading area='productos' />
                 <SwipeListView
+                    enableEmptySections={true}
                     dataSource={this.state.ds.cloneWithRows(this.state.productosLista)}
                     renderRow={(producto, rowId) => (
                         <SwipeRow
